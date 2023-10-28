@@ -6,17 +6,17 @@ import 'package:layblar_app/DTO/chartItem.dart';
 
 import '../Widgets/BTMNavigationBar.dart';
 
-class HomeScreen extends StatefulWidget {
+class TimerScreen extends StatefulWidget {
 
 
-  const HomeScreen({  Key? key }) : super(key: key);
+  const TimerScreen({  Key? key }) : super(key: key);
 
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<TimerScreen> createState() => _TimerScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _TimerScreenState extends State<TimerScreen> {
 
   final Stopwatch _stopwatch = Stopwatch();
   late Timer _timer;
@@ -112,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
         ],
       ),
-      bottomNavigationBar: const BTMNavigationBar(currentPage: "Timer",),
+      bottomNavigationBar:  BTMNavigationBar(currentPage: "Timer", ctx: context,),
     );
   }
 }

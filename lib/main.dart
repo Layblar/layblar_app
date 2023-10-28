@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:layblar_app/screens/Homescreen.dart';
+import 'package:layblar_app/screens/TimerScreen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const HomeScreen(),
+      home: const TimerScreen(),
     );
   }
 }

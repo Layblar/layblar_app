@@ -4,8 +4,10 @@ import 'package:layblar_app/Themes/ThemeColors.dart';
 class BTMNavigationBar extends StatefulWidget {
 
   final String currentPage;
+  final BuildContext ctx;
   const BTMNavigationBar({
     required this.currentPage,
+    required this.ctx,
     Key? key,
   }) : super(key: key);
 
@@ -36,7 +38,7 @@ class _BTMNavigationBarState extends State<BTMNavigationBar> {
           _isDetailsCurrent = true; 
         break;
       case ("Labels"):
-          _isDetailsCurrent = true; 
+          _isLabelsCurrent = true; 
         break;
       case ("Chart"):
           _isChartCurrent = true;
