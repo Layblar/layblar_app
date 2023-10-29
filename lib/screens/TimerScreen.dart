@@ -4,7 +4,6 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:layblar_app/DTO/chartItem.dart';
 
-import '../Widgets/BTMNavigationBar.dart';
 
 class TimerScreen extends StatefulWidget {
 
@@ -61,59 +60,56 @@ class _TimerScreenState extends State<TimerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-      appBar: AppBar(
-        title: const Text("Projekt XY"),
-      ),
-      body: Column(
-        children: [
-          Text(
-            _result,
-            style: const TextStyle(
-              fontSize: 50.0,
+      
+    return  Container(
+        child: Column(
+          children: [
+            Text(
+              _result,
+              style: const TextStyle(
+                fontSize: 50.0,
+              ),
             ),
-          ),
-          Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                // Stop button
-                _isRunning ? ElevatedButton(
-                  onPressed: _stop,
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.red,
-                  ),
-                  child: const Text('Stop'),
-                ): Container(),
-                // Reset button
-                _isRunning? ElevatedButton(
-                  onPressed: _reset,
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.green,
-                  ),
-                  child: const Text('Reset'),
-                ): Container()
-              ],
-            ),
-            DropdownButton(
-              value: selectedHousehould,
-              onChanged: (String? newValue){
-                setState(() {
-                  selectedHousehould = newValue!;
-                });
-              },
-              items: dropdownItems, 
+            Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  // Stop button
+                  _isRunning ? ElevatedButton(
+                    onPressed: _stop,
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.red,
+                    ),
+                    child: const Text('Stop'),
+                  ): Container(),
+                  // Reset button
+                  _isRunning? ElevatedButton(
+                    onPressed: _reset,
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.green,
+                    ),
+                    child: const Text('Reset'),
+                  ): Container()
+                ],
+              ),
+              DropdownButton(
+                value: selectedHousehould,
+                onChanged: (String? newValue){
+                  setState(() {
+                    selectedHousehould = newValue!;
+                  });
+                },
+                items: dropdownItems, 
 
-            ),
-            
-            ElevatedButton(
-              onPressed: _start,
-              child: const Text('Start'),
-            ),
+              ),
+              
+              ElevatedButton(
+                onPressed: _start,
+                child: const Text('Start'),
+              ),
 
-        ],
-      ),
-      bottomNavigationBar:  BTMNavigationBar(currentPage: "Timer", ctx: context,),
-    );
+          ],
+        ),
+      );
   }
 }
 

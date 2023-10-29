@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:layblar_app/Widgets/BTMNavigationBar.dart';
 
 class LabelsScreen extends StatefulWidget {
   const LabelsScreen({ Key? key }) : super(key: key);
@@ -11,12 +10,7 @@ class LabelsScreen extends StatefulWidget {
 class _LabelsScreenState extends State<LabelsScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("labels"),
-      ),
-      body:  Container(child: Text("Alle labels"),),
-      bottomNavigationBar: BTMNavigationBar(currentPage: "Labels", ctx: context,),
-    );
+    return  Container(child: Text("Alle labels"));
+     
   }
 }
