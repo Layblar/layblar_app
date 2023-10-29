@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:layblar_app/DTO/chartItem.dart';
 
 
 class TimerScreen extends StatefulWidget {
