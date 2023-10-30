@@ -36,7 +36,10 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ThemeColors.primaryBackground,
-      appBar: AppBar(title: Text("Hallo")),
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text("Layblar", textAlign: TextAlign.center,),
+        backgroundColor: ThemeColors.secondaryBackground,),
       body: _currentWidget,
       bottomNavigationBar: 
       BottomNavigationBar(

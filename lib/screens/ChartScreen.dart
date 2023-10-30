@@ -17,6 +17,11 @@ class _ChartScreenState extends State<ChartScreen> {
 
   final List<DataPoint> _dataPoints = generateDataPoints();
 
+  
+
+
+
+
   String startTime = "";
   String endTime = "";
 
@@ -35,6 +40,7 @@ class _ChartScreenState extends State<ChartScreen> {
 //TODO:VALIDATION
 //bugfix: wen man auf endtime drückt und dann auf start setzt es beide
   void enableStartTime(){
+    isEndTimeEnabled = false;
     isStartTimeEnabled = true;
   }
 
@@ -44,14 +50,25 @@ class _ChartScreenState extends State<ChartScreen> {
   }
 
   void onSubmit (){
-    isEndTimeEnabled = false;
     setState(() {
+      isEndTimeEnabled = false;
+      isStartTimeEnabled = false;
       startTime = "";
       endTime = "";
       selectedStartIndex = null;
       selectedEndIndex = null;
     });
-    
+  }
+
+  void onReset (){
+    setState(() {
+      isEndTimeEnabled = false;
+      isStartTimeEnabled = false;
+      startTime = "";
+      endTime = "";
+      selectedStartIndex = null;
+      selectedEndIndex = null;
+    });
   }
 
   void toggleTimeFilter(String time){
@@ -162,7 +179,7 @@ class _ChartScreenState extends State<ChartScreen> {
                         for (final LineBarSpot touchedSpot in touchedSpots) {
                           final DateTime time = _dataPoints[touchedSpot.x.toInt()].time;
                           final String timeText = '${time.hour}:${time.minute}';
-                          tooltips.add(LineTooltipItem(timeText, TextStyle(color: Colors.white)));
+                          tooltips.add(LineTooltipItem(timeText, TextStyle(color: ThemeColors.textColor)));
                         }
                         return tooltips;
                       },
@@ -187,19 +204,103 @@ class _ChartScreenState extends State<ChartScreen> {
         ),
         Expanded(
           flex:4,
-          child: Container(
+          child: SizedBox(
             width: double.infinity,
-            margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-            decoration: Styles.containerDecoration,
+            //margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+            //decoration: Styles.containerDecoration,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+             
               children: [
-                ElevatedButton(onPressed: ()=> enableStartTime(), child: const Text("choose start Time"), style: Styles.primaryButtonStyle,),
-                ElevatedButton(onPressed: ()=> enableEndTime(), child: const Text("choose end Time"), style: Styles.secondaryButtonStyle,),
-                Text("Start Time: " + startTime),
-                Text("End Time: " + endTime),
-                ElevatedButton(onPressed: ()=> onSubmit(), child: const Text("Submit"), style: Styles.primaryButtonStyle,)
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                  padding: const EdgeInsets.all(8),
+                  decoration: Styles.containerDecoration,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Expanded(
+                        flex: 5,
+                        child: ElevatedButton(
+                          onPressed: ()=> enableStartTime(), 
+                          child: const Text("Set Start Time"), 
+                          style: Styles.primaryButtonStyle,
+                        ),
+                      ),
+                      Expanded(flex: 1,child: Container()),
+                      Expanded(
+                        flex: 4,
+                        child: Row(
+                          children: [
+                            const Expanded(flex: 1, child:  Text("Start Time:")),
+                            Expanded(
+                              flex: 1,
+                              child: Container(
+                                decoration:Styles.primaryBackgroundContainerDecoration,
+                                child: Center(
+                                  child: Text(startTime)))),
+                          ],
+                        ),
+                      )
+                      
+                    ],
+                  )
+                ),
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 8),
+                  padding: const EdgeInsets.all(8),
+                  decoration: Styles.containerDecoration,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Expanded(
+                        flex: 5,
+                        child: ElevatedButton(
+                          onPressed: ()=> enableEndTime(), 
+                          child: const Text("Set End Time"), 
+                          style: Styles.secondaryButtonStyle,
+                        ),
+                      ),
+                      Expanded(flex: 1,child: Container()),
+                      Expanded(
+                        flex: 4,
+                        child: Row(
+                          children: [
+                            const Expanded(flex: 1, child:  Text("End Time:")),
+                            Expanded(
+                              flex: 1,
+                              child: Container(
+                                decoration:Styles.primaryBackgroundContainerDecoration,
+                                child: Center(
+                                  child: Text(endTime)))),
+                          ],
+                        ),
+                      )
+                      
+                    ],
+                  )
+                ),
+               
+               
+                Container(
+                  margin: const EdgeInsets.all(8),
+                  decoration: Styles.containerDecoration,
+                  child: Row(
+                    children: [
+                      Expanded(child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ElevatedButton(onPressed: ()=> onReset(), child: const Text("Reset"), style: Styles.errorButtonStyle,),
+                      )),
+                      Expanded(child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ElevatedButton(onPressed: ()=> onSubmit(), child: const Text("Submit"), style: Styles.primaryButtonStyle,),
+                      )),
+                    ],
+                  ),
+                ),
+                
+
               ],
             ),
           ),
@@ -207,6 +308,8 @@ class _ChartScreenState extends State<ChartScreen> {
       ],
     );
   }
+
+
 
   //chart setup/customization stuff
   Widget getTitles (double value, TitleMeta meta){
@@ -224,7 +327,7 @@ class _ChartScreenState extends State<ChartScreen> {
 
   FlTitlesData getTilesData(){
     return FlTitlesData(
-        leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: true, interval: 1)),
+        leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: true, interval: 1, reservedSize: 28)),
         rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
         topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
 
@@ -241,7 +344,7 @@ class _ChartScreenState extends State<ChartScreen> {
   FlBorderData getBorderData(){
     return FlBorderData(
         show: true,
-        border: Border.all(color: const Color(0xff37434d), width: 1),
+        border: Border.all(color: ThemeColors.primaryBackground, width: 1),
       );
   }
 
@@ -250,6 +353,8 @@ class _ChartScreenState extends State<ChartScreen> {
   }
 
   LineChartBarData getChartData(){
+    final chartGradient = LinearGradient(colors: [ThemeColors.primary.withOpacity(0.8), ThemeColors.secondary.withOpacity(0.8)]);
+    final belowBarDataGRadient = LinearGradient(colors: [ThemeColors.primary.withOpacity(0.2), ThemeColors.secondary.withOpacity(0.2)]);
     return LineChartBarData(
           spots: _dataPoints
               .asMap()
@@ -260,9 +365,12 @@ class _ChartScreenState extends State<ChartScreen> {
                   ))
               .toList(),
           isCurved: true,
-          color: Colors.blue, // Farbe der Linie
+          gradient: chartGradient, // Farbe der Linie
           dotData: FlDotData(show: false),
-          belowBarData: BarAreaData(show: false),
+          belowBarData: BarAreaData(
+            show: true,
+            gradient: belowBarDataGRadient
+          ),
         );
   }
 
