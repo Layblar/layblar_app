@@ -64,6 +64,10 @@ class _TimerScreenState extends State<TimerScreen> {
     });
   }
 
+  void _submit(String household, String time){
+    debugPrint("submitted: " + household + ", " + time);
+  }
+
   @override
   Widget build(BuildContext context) {
       
@@ -77,74 +81,89 @@ class _TimerScreenState extends State<TimerScreen> {
         child: Column(
           children: [
             //const InfoBox(),
-            //household selection
-            getHouseHoldSelection(), 
-
-            //stopwatch time
-
-            Container(
-              margin: EdgeInsets.all(8),
-              width: MediaQuery.of(context).size.width,
-              decoration: Styles.containerDecoration,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    Container(
-                      decoration: Styles.primaryBackgroundContainerDecoration,
-                      child: Text(
-                        _result,
-                        style: const TextStyle(
-                          fontSize: 50.0,
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap:  !_isRunning? _start : _stop,
-                      child: Container(
-                        height: 136,
-                        width: 136,
-                        decoration: !_isRunning ? Styles.stopwatchContainerDecoration: Styles.stopwatchContainerDecorationStopped,
-                        child:  Center(child: !_isRunning? Text("Start", style: Styles.headerTextStyle,): Text("Stop", style: Styles.headerTextStyle,) ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),   
             
-            Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  // Stop button
-                  _isRunning ? ElevatedButton(
-                    onPressed: _stop,
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.red,
-                    ),
-                    child: const Text('Stop'),
-                  ): Container(),
-                  // Reset button
-                  _isRunning? ElevatedButton(
-                    onPressed: _reset,
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.green,
-                    ),
-                    child: const Text('Reset'),
-                  ): Container()
-                ],
-              ),
-             
-              
-              ElevatedButton(
-                onPressed: _start,
-                child: const Text('Start'),
-              ),
-
+            Expanded(flex: 2, child: getHouseHoldSelection()), 
+            Expanded(flex: 7, child: getStopwatchSection(context)),
+            Expanded(flex: 1,child: getSubmitBtnSection(context))   
+        
           ],
         ),
       );
   }
+
+  Container getSubmitBtnSection(BuildContext context) {
+    return Container(
+            width: MediaQuery.of(context).size.width,
+            margin: const EdgeInsets.all(8),
+            decoration: Styles.containerDecoration,
+            child: Padding(
+              padding: const EdgeInsets.symmetric( vertical: 8.0, horizontal: 32.0),
+              child: ElevatedButton(
+                onPressed: ()=>  _submit(selectedHousehould, _result),
+                style: Styles.primaryButtonStyle,
+                child: const Text("Sumbit"),  
+              ),
+            ),
+          );
+  }
+
+  Container getStopwatchSection(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.all(8),
+      width: MediaQuery.of(context).size.width,
+      decoration: Styles.containerDecoration,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Stack(
+          children: [
+            Align(
+              alignment: Alignment.topLeft,
+              child: BlinkingDotWidget(isRunning: _isRunning),
+            ),
+            Align(
+              alignment: Alignment.center,
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Container(
+                    decoration: Styles.primaryBackgroundContainerDecoration,
+                    child: Text(
+                      _result,
+                      style: const TextStyle(
+                        fontSize: 50.0,
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: !_isRunning ? _start : _stop,
+                    child: Container(
+                      height: 200,
+                      width: 200,
+                      decoration: !_isRunning
+                          ? Styles.stopwatchContainerDecoration
+                          : Styles.stopwatchContainerDecorationStopped,
+                      child: Center(
+                        child: !_isRunning
+                            ? Text("Start", style: Styles.headerTextStyle)
+                            : Text("Stop", style: Styles.headerTextStyle),
+                      ),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: _reset,
+                    style: Styles.secondaryButtonStyle,
+                    child: const Text('Reset'),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
 
   Container getHouseHoldSelection() {
     return Container(
@@ -153,12 +172,12 @@ class _TimerScreenState extends State<TimerScreen> {
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 
                 children: [
-                  const Text("Select your household"),
-                  Container(
+                  Text("Select your household.", style: Styles.infoBoxTextStyle,),
+                  SizedBox(
                     width: double.infinity,
                     child: DropdownButton(
                       value: selectedHousehould,
@@ -200,6 +219,59 @@ class InfoBox extends StatelessWidget {
       ),
        
     );
+  }
+}
+
+
+
+class BlinkingDotWidget extends StatefulWidget {
+  final bool isRunning;
+
+  BlinkingDotWidget({required this.isRunning});
+
+  @override
+  _BlinkingDotWidgetState createState() => _BlinkingDotWidgetState();
+}
+
+class _BlinkingDotWidgetState extends State<BlinkingDotWidget> {
+  late Timer _blinkTimer;
+  bool _isVisible = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _blinkTimer = Timer.periodic(const Duration(milliseconds: 500), (timer) {
+      if (widget.isRunning) {
+        setState(() {
+          _isVisible = !_isVisible;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _blinkTimer.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.isRunning && _isVisible) {
+      return Container(
+        width: 10,
+        height: 10,
+        decoration: BoxDecoration(
+          color: Colors.red,
+          shape: BoxShape.circle,
+        ),
+      );
+    } else {
+      return SizedBox(
+        width: 10,
+        height: 10,
+      );
+    }
   }
 }
 

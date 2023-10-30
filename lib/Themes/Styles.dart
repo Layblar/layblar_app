@@ -64,11 +64,12 @@ class Styles{
 
     static final infoBoxTextStyle =  TextStyle(
     fontSize: 18,
+    fontWeight: FontWeight.bold,
     color: ThemeColors.textColor,
   );
 
   static final headerTextStyle = TextStyle(
-    fontSize: 24,
+    fontSize: 48,
     color: ThemeColors.textColor
   );
 
