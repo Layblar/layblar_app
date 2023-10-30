@@ -7,6 +7,7 @@ class LabelsScreen extends StatefulWidget {
   State<LabelsScreen> createState() => _LabelsScreenState();
 }
 
+//einf ne lsite von dem ganzen mist den wir gelabelt haben (ev bearbeiten/löschen?)
 class _LabelsScreenState extends State<LabelsScreen> {
   @override
   Widget build(BuildContext context) {

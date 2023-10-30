@@ -132,10 +132,12 @@ class _TimerScreenState extends State<TimerScreen> {
                         flex: 6,
                         child: Container(
                           decoration: Styles.primaryBackgroundContainerDecoration,
-                          child: Text(
-                            _result,
-                            style: const TextStyle(
-                              fontSize: 50.0,
+                          child: Center(
+                            child: Text(
+                              _result,
+                              style: const TextStyle(
+                                fontSize: 50.0,
+                              ),
                             ),
                           ),
                         ),

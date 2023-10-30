@@ -14,6 +14,12 @@ class Styles{
     textStyle: TextStyle(color: ThemeColors.textColor)
   );
 
+  static final tertiaryButtonStyle = ElevatedButton.styleFrom(
+    primary: ThemeColors.tertiary,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    textStyle: TextStyle(color: ThemeColors.textColor)
+  );
+
   static final errorButtonStyle = ElevatedButton.styleFrom(
     primary: ThemeColors.error,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),

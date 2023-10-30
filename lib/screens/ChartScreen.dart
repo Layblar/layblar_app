@@ -2,9 +2,12 @@ import 'dart:math';
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:layblar_app/DTO/DEviceCardMocksDTO.dart';
 import 'package:layblar_app/DTO/DataPointMockDTO.dart';
 import 'package:layblar_app/Themes/Styles.dart';
 import 'package:layblar_app/Themes/ThemeColors.dart';
+
+import '../WIdgets/DeviceCardItem.dart';
 
 class ChartScreen extends StatefulWidget {
   const ChartScreen({ Key? key }) : super(key: key);
@@ -16,11 +19,7 @@ class ChartScreen extends StatefulWidget {
 class _ChartScreenState extends State<ChartScreen> {
 
   final List<DataPoint> _dataPoints = generateDataPoints();
-
-  
-
-
-
+  final List<DeviceCardItem> cardMocks = DeviceCardMockDTO.generateCards();
 
   String startTime = "";
   String endTime = "";
@@ -37,8 +36,9 @@ class _ChartScreenState extends State<ChartScreen> {
   bool isWeekSelected = false;
   bool isMonthSelected = false;
 
-//TODO:VALIDATION
-//bugfix: wen man auf endtime drückt und dann auf start setzt es beide
+  String selectedDevice = "";
+  bool isDeviceSelected = false;
+
   void enableStartTime(){
     isEndTimeEnabled = false;
     isStartTimeEnabled = true;
@@ -100,44 +100,10 @@ class _ChartScreenState extends State<ChartScreen> {
       children: [
         Expanded(
           flex: 1,
-          child: Container(
-            margin: const EdgeInsets.only(left: 8, right: 8, top: 16, bottom: 0),
-            decoration: Styles.containerDecoration,
-            child: Row(
-              children: [
-                Expanded(flex:1, 
-                child: GestureDetector(
-                  onTap: ()=> toggleTimeFilter("day"),
-                  child: Container(
-                    decoration: isTodaySelected?Styles.selctedContainerDecoration:null,
-                    child: const Center(
-                      child: Text("Today"),)),
-                ),),
-                Expanded(
-                  flex:1,
-                  child: GestureDetector(
-                    onTap: ()=> toggleTimeFilter("week"),
-                    child: Container(
-                      decoration: isWeekSelected?Styles.selctedContainerDecoration:null,
-                    child: const Center(
-                      child: Text("This Week"),)),
-                  ),
-                ),
-                Expanded(flex:1, 
-                child: GestureDetector(
-                  onTap: ()=> toggleTimeFilter("month"),
-                  child: Container(
-                    decoration: isMonthSelected?Styles.selctedContainerDecoration:null,
-                    child: const Center(
-                      child: Text("This Month"),)),
-                ),),
-
-              ],
-            ),
-          )
+          child: getTimeFilterSection()
         ),
         Expanded(
-          flex: 5, 
+          flex: 4, 
           child: Container(
             margin: const EdgeInsets.only(left: 8, top:8, right: 8, bottom:0),
             decoration:Styles.containerDecoration,
@@ -207,107 +173,225 @@ class _ChartScreenState extends State<ChartScreen> {
           flex:4,
           child: SizedBox(
             width: double.infinity,
-            //margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-            //decoration: Styles.containerDecoration,
             child: Column(
-             
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                  padding: const EdgeInsets.all(8),
-                  decoration: Styles.containerDecoration,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Expanded(
-                        flex: 5,
-                        child: ElevatedButton(
-                          onPressed: ()=> enableStartTime(), 
-                          child: const Text("Set Start Time"), 
-                          style: Styles.primaryButtonStyle,
-                        ),
-                      ),
-                      Expanded(flex: 1,child: Container()),
-                      Expanded(
-                        flex: 4,
-                        child: Row(
-                          children: [
-                            const Expanded(flex: 1, child:  Text("Start Time:")),
-                            Expanded(
-                              flex: 1,
-                              child: Container(
-                                decoration:Styles.primaryBackgroundContainerDecoration,
-                                child: Center(
-                                  child: Text(startTime)))),
-                          ],
-                        ),
-                      )
-                      
-                    ],
-                  )
-                ),
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 8),
-                  padding: const EdgeInsets.all(8),
-                  decoration: Styles.containerDecoration,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Expanded(
-                        flex: 5,
-                        child: ElevatedButton(
-                          onPressed: ()=> enableEndTime(), 
-                          child: const Text("Set End Time"), 
-                          style: Styles.secondaryButtonStyle,
-                        ),
-                      ),
-                      Expanded(flex: 1,child: Container()),
-                      Expanded(
-                        flex: 4,
-                        child: Row(
-                          children: [
-                            const Expanded(flex: 1, child:  Text("End Time:")),
-                            Expanded(
-                              flex: 1,
-                              child: Container(
-                                decoration:Styles.primaryBackgroundContainerDecoration,
-                                child: Center(
-                                  child: Text(endTime)))),
-                          ],
-                        ),
-                      )
-                      
-                    ],
-                  )
-                ),
-               
-               
-                Container(
-                  margin: const EdgeInsets.all(8),
-                  decoration: Styles.containerDecoration,
-                  child: Row(
-                    children: [
-                      Expanded(child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ElevatedButton(onPressed: ()=> onReset(), child: const Text("Reset"), style: Styles.errorButtonStyle,),
-                      )),
-                      Expanded(child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ElevatedButton(onPressed: ()=> onSubmit(), child: const Text("Submit"), style: Styles.primaryButtonStyle,),
-                      )),
-                    ],
-                  ),
-                ),
-                
-
+                getStartTimeSection(),
+                getEndTimeSection(),
+                getSetDeviceSection(),
+                getResetSubmitBtnSection(),
               ],
             ),
           ),
         )
       ],
     );
+  }
+
+  Container getSetDeviceSection() {
+    return Container(
+                margin: const EdgeInsets.only(left: 8, right: 8),
+                decoration: Styles.containerDecoration,
+                child: Row(
+                  children: [
+                    Expanded(flex: 5, child: Icon(Icons.check_circle, size: 36, color: isDeviceSelected?ThemeColors.tertiary : ThemeColors.primaryDisabled,)),
+                    Expanded(flex: 5, child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(onPressed: ()=> openDeviceCataloge(context), child: const Text("Set Device"), style: Styles.tertiaryButtonStyle,),
+                    )),
+                  ],
+                ),
+              );
+  }
+
+  Container getResetSubmitBtnSection() {
+    return Container(
+                margin: const EdgeInsets.only(left: 8, right: 8),
+                decoration: Styles.containerDecoration,
+                child: Row(
+                  children: [
+                    Expanded(child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(onPressed: ()=> onReset(), child: const Text("Reset"), style: Styles.errorButtonStyle,),
+                    )),
+                    Expanded(child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(onPressed: ()=> onSubmit(), child: const Text("Submit"), style: Styles.primaryButtonStyle,),
+                    )),
+                  ],
+                ),
+              );
+  }
+
+  Container getEndTimeSection() {
+    return Container(
+                margin: const EdgeInsets.symmetric(horizontal: 8),
+                padding: const EdgeInsets.all(8),
+                decoration: Styles.containerDecoration,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Expanded(
+                      flex: 5,
+                      child: ElevatedButton(
+                        onPressed: ()=> enableEndTime(), 
+                        child: const Text("Set End Time"), 
+                        style: Styles.secondaryButtonStyle,
+                      ),
+                    ),
+                    Expanded(flex: 1,child: Container()),
+                    Expanded(
+                      flex: 4,
+                      child: Row(
+                        children: [
+                          const Expanded(flex: 1, child:  Text("End Time:")),
+                          Expanded(
+                            flex: 1,
+                            child: Container(
+                              decoration:Styles.primaryBackgroundContainerDecoration,
+                              child: Center(
+                                child: Text(endTime)))),
+                        ],
+                      ),
+                    )
+                    
+                  ],
+                )
+              );
+  }
+
+  Container getStartTimeSection() {
+    return Container(
+                margin: const EdgeInsets.symmetric(horizontal: 8),
+                padding: const EdgeInsets.all(8),
+                decoration: Styles.containerDecoration,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Expanded(
+                      flex: 5,
+                      child: ElevatedButton(
+                        onPressed: ()=> enableStartTime(), 
+                        child: const Text("Set Start Time"), 
+                        style: Styles.primaryButtonStyle,
+                      ),
+                    ),
+                    Expanded(flex: 1,child: Container()),
+                    Expanded(
+                      flex: 4,
+                      child: Row(
+                        children: [
+                          const Expanded(flex: 1, child:  Text("Start Time:")),
+                          Expanded(
+                            flex: 1,
+                            child: Container(
+                              decoration:Styles.primaryBackgroundContainerDecoration,
+                              child: Center(
+                                child: Text(startTime)))),
+                        ],
+                      ),
+                    )
+                    
+                  ],
+                )
+              );
+  }
+
+  Container getTimeFilterSection() {
+    return Container(
+          margin: const EdgeInsets.only(left: 8, right: 8, top: 16, bottom: 8),
+          decoration: Styles.containerDecoration,
+          child: Row(
+            children: [
+              Expanded(flex:1, 
+              child: GestureDetector(
+                onTap: ()=> toggleTimeFilter("day"),
+                child: Container(
+                  decoration: isTodaySelected?Styles.selctedContainerDecoration:null,
+                  child: const Center(
+                    child: Text("Today"),)),
+              ),),
+              Expanded(
+                flex:1,
+                child: GestureDetector(
+                  onTap: ()=> toggleTimeFilter("week"),
+                  child: Container(
+                    decoration: isWeekSelected?Styles.selctedContainerDecoration:null,
+                  child: const Center(
+                    child: Text("This Week"),)),
+                ),
+              ),
+              Expanded(flex:1, 
+              child: GestureDetector(
+                onTap: ()=> toggleTimeFilter("month"),
+                child: Container(
+                  decoration: isMonthSelected?Styles.selctedContainerDecoration:null,
+                  child: const Center(
+                    child: Text("This Month"),)),
+              ),),
+
+            ],
+          ),
+        );
+  }
+
+
+  void openDeviceCataloge(BuildContext context){
+
+    
+
+    showDialog(context: context, builder: (BuildContext context){
+      return AlertDialog(
+        backgroundColor: ThemeColors.primaryBackground,
+        titleTextStyle: Styles.regularTextStyle,
+       content:  SingleChildScrollView(
+        child: ListBody(
+          children:  [
+              Text("Choose one device from the list below which was used during your predefined time range. The devices are predefined by your research team.", style: Styles.regularTextStyle,),
+              Column(
+                children: [
+                  for (int index = 0; index < cardMocks.length; index += 2)
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            height: 190,
+                            child: DeviceCardItem(
+                              title: cardMocks[index].title,
+                              imgUrl: cardMocks[index].imgUrl,
+                            ),
+                          ),
+                        ),
+                    if (index + 1 < cardMocks.length)
+                        Expanded(
+                          child: Container(
+                            height: 190,
+                            child: DeviceCardItem(
+                            title: cardMocks[index + 1].title,
+                            imgUrl: cardMocks[index + 1].imgUrl,
+                      ),
+                          ),
+                    ),
+                ],
+              ),
+          ],
+        ),
+  
+
+             
+        ]),
+       ),
+       actions: [
+        ElevatedButton(onPressed: ()=> Navigator.of(context).pop(), child: Text("Close"), style: Styles.errorButtonStyle,),
+        ElevatedButton(onPressed: (){}, child: Text("Submit"), style: Styles.primaryButtonStyle,)
+
+       ],
+          
+         
+      );
+    });
   }
 
 
@@ -379,5 +463,7 @@ class _ChartScreenState extends State<ChartScreen> {
     return _dataPoints.map((point) => point.energyConsumption).reduce((a, b) => a > b ? a : b) + 1; // Maximaler Stromverbrauch + 1
   }
 }
+
+
 
 
