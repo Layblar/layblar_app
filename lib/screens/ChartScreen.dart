@@ -28,6 +28,10 @@ class _ChartScreenState extends State<ChartScreen> {
   List<ShowingTooltipIndicators> selectedSpots =[];
   List<LineBarSpot> showingSpots = [];
 
+  bool isTodaySelected =true;
+  bool isWeekSelected = false;
+  bool isMonthSelected = false;
+
 //TODO:VALIDATION
 //bugfix: wen man auf endtime drückt und dann auf start setzt es beide
   void enableStartTime(){
@@ -49,6 +53,29 @@ class _ChartScreenState extends State<ChartScreen> {
     });
     
   }
+
+  void toggleTimeFilter(String time){
+    if(time == "day"){
+      setState(() {
+        isTodaySelected =true;
+        isWeekSelected = false;
+        isMonthSelected = false;
+      });
+    }else if(time == "week"){
+      setState(() {
+        isTodaySelected =false;
+        isWeekSelected = true;
+        isMonthSelected = false;
+      });
+    }else if(time == "month"){
+      setState(() {
+        isTodaySelected =false;
+        isWeekSelected = false;
+        isMonthSelected = true;
+      });
+    }
+    
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -58,13 +85,44 @@ class _ChartScreenState extends State<ChartScreen> {
           flex: 1,
           child: Container(
             margin: const EdgeInsets.only(left: 8, right: 8, top: 16, bottom: 0),
-            decoration: Styles.containerDecoration
+            decoration: Styles.containerDecoration,
+            child: Row(
+              children: [
+                Expanded(flex:1, 
+                child: GestureDetector(
+                  onTap: ()=> toggleTimeFilter("day"),
+                  child: Container(
+                    decoration: isTodaySelected?Styles.selctedContainerDecoration:null,
+                    child: const Center(
+                      child: Text("Today"),)),
+                ),),
+                Expanded(
+                  flex:1,
+                  child: GestureDetector(
+                    onTap: ()=> toggleTimeFilter("week"),
+                    child: Container(
+                      decoration: isWeekSelected?Styles.selctedContainerDecoration:null,
+                    child: const Center(
+                      child: Text("This Week"),)),
+                  ),
+                ),
+                Expanded(flex:1, 
+                child: GestureDetector(
+                  onTap: ()=> toggleTimeFilter("month"),
+                  child: Container(
+                    decoration: isMonthSelected?Styles.selctedContainerDecoration:null,
+                    child: const Center(
+                      child: Text("This Month"),)),
+                ),),
+
+              ],
+            ),
           )
         ),
         Expanded(
           flex: 5, 
           child: Container(
-            margin: const EdgeInsets.only(left: 8, top:8, right: 8, bottom:16),
+            margin: const EdgeInsets.only(left: 8, top:8, right: 8, bottom:0),
             decoration:Styles.containerDecoration,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -129,16 +187,21 @@ class _ChartScreenState extends State<ChartScreen> {
         ),
         Expanded(
           flex:4,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              ElevatedButton(onPressed: ()=> enableStartTime(), child: const Text("choose start Time"), style: Styles.primaryButtonStyle,),
-              ElevatedButton(onPressed: ()=> enableEndTime(), child: const Text("choose end Time"), style: Styles.secondaryButtonStyle,),
-              Text("Start Time: " + startTime),
-              Text("End Time: " + endTime),
-              ElevatedButton(onPressed: ()=> onSubmit(), child: const Text("Submit"), style: Styles.primaryButtonStyle,)
-            ],
+          child: Container(
+            width: double.infinity,
+            margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+            decoration: Styles.containerDecoration,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                ElevatedButton(onPressed: ()=> enableStartTime(), child: const Text("choose start Time"), style: Styles.primaryButtonStyle,),
+                ElevatedButton(onPressed: ()=> enableEndTime(), child: const Text("choose end Time"), style: Styles.secondaryButtonStyle,),
+                Text("Start Time: " + startTime),
+                Text("End Time: " + endTime),
+                ElevatedButton(onPressed: ()=> onSubmit(), child: const Text("Submit"), style: Styles.primaryButtonStyle,)
+              ],
+            ),
           ),
         )
       ],

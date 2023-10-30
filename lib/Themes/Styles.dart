@@ -24,4 +24,9 @@ class Styles{
     color: ThemeColors.secondaryBackground,
     borderRadius: BorderRadius.circular(16)
   );
+
+   static final selctedContainerDecoration = BoxDecoration(
+    color: ThemeColors.primary,
+    borderRadius: BorderRadius.circular(16)
+  );
 }
