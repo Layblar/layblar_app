@@ -114,26 +114,34 @@ class _TimerScreenState extends State<TimerScreen> {
       decoration: Styles.containerDecoration,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Stack(
-          children: [
-            Align(
-              alignment: Alignment.topLeft,
-              child: BlinkingDotWidget(isRunning: _isRunning),
-            ),
-            Align(
-              alignment: Alignment.center,
-              child: Column(
+        child: 
+              Column(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Container(
-                    decoration: Styles.primaryBackgroundContainerDecoration,
-                    child: Text(
-                      _result,
-                      style: const TextStyle(
-                        fontSize: 50.0,
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: Container(
+                          child: BlinkingDotWidget(isRunning: _isRunning),
+                        ),
                       ),
-                    ),
+
+                      Expanded(
+                        flex: 6,
+                        child: Container(
+                          decoration: Styles.primaryBackgroundContainerDecoration,
+                          child: Text(
+                            _result,
+                            style: const TextStyle(
+                              fontSize: 50.0,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(flex: 2, child: Container())
+                    ],
                   ),
                   GestureDetector(
                     onTap: !_isRunning ? _start : _stop,
@@ -158,9 +166,9 @@ class _TimerScreenState extends State<TimerScreen> {
                 ],
               ),
             ),
-          ],
-        ),
-      ),
+          
+        
+      
     );
   }
 
@@ -259,17 +267,17 @@ class _BlinkingDotWidgetState extends State<BlinkingDotWidget> {
   Widget build(BuildContext context) {
     if (widget.isRunning && _isVisible) {
       return Container(
-        width: 10,
-        height: 10,
+        width: 20,
+        height: 20,
         decoration: BoxDecoration(
-          color: Colors.red,
+          color: ThemeColors.error,
           shape: BoxShape.circle,
         ),
       );
     } else {
-      return SizedBox(
-        width: 10,
-        height: 10,
+      return const SizedBox(
+        width: 20,
+        height: 20,
       );
     }
   }
