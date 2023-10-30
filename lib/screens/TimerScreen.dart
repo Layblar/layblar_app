@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:layblar_app/Themes/Styles.dart';
+import 'package:layblar_app/Themes/ThemeColors.dart';
 
 
 class TimerScreen extends StatefulWidget {
@@ -24,10 +26,10 @@ class _TimerScreenState extends State<TimerScreen> {
 
   //get our households
   List<DropdownMenuItem<String>>  dropdownItems =
-   const [
-      DropdownMenuItem(child: Text("Haushalt 1"),value: "Haushalt 1"),
-      DropdownMenuItem(child: Text("Haushalt 2"),value: "Haushalt 2"),
-      DropdownMenuItem(child: Text("Haushalt 3"),value: "Haushalt 3"),
+    [
+      DropdownMenuItem(child: Container(color: ThemeColors.secondaryBackground, child: Text("Haushalt 1", style: Styles.regularTextStyle,)),value: "Haushalt 1", ),
+      DropdownMenuItem(child: Container(color: ThemeColors.secondaryBackground, child: Text("Haushalt 2", style: Styles.regularTextStyle,)), value: "Haushalt 2"),
+      DropdownMenuItem(child: Container(color: ThemeColors.secondaryBackground, child: Text("Haushalt 3", style: Styles.regularTextStyle,)),value: "Haushalt 3"),
     ];
 
 
@@ -44,8 +46,13 @@ class _TimerScreenState extends State<TimerScreen> {
   }
 
    void _stop() {
+
+    
     _timer.cancel();
     _stopwatch.stop();
+    setState(() {
+      _isRunning = false;
+    });
   }
 
   void _reset(){
@@ -60,15 +67,52 @@ class _TimerScreenState extends State<TimerScreen> {
   @override
   Widget build(BuildContext context) {
       
-    return  Container(
+      //infobox
+      //househol selection
+      //time
+      //big cirlce with glow
+      //reset button
+      //sumbit
+    return  SizedBox(
         child: Column(
           children: [
-            Text(
-              _result,
-              style: const TextStyle(
-                fontSize: 50.0,
+            //const InfoBox(),
+            //household selection
+            getHouseHoldSelection(), 
+
+            //stopwatch time
+
+            Container(
+              margin: EdgeInsets.all(8),
+              width: MediaQuery.of(context).size.width,
+              decoration: Styles.containerDecoration,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Container(
+                      decoration: Styles.primaryBackgroundContainerDecoration,
+                      child: Text(
+                        _result,
+                        style: const TextStyle(
+                          fontSize: 50.0,
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap:  !_isRunning? _start : _stop,
+                      child: Container(
+                        height: 136,
+                        width: 136,
+                        decoration: !_isRunning ? Styles.stopwatchContainerDecoration: Styles.stopwatchContainerDecorationStopped,
+                        child:  Center(child: !_isRunning? Text("Start", style: Styles.headerTextStyle,): Text("Stop", style: Styles.headerTextStyle,) ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
+            ),   
+            
             Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -90,16 +134,7 @@ class _TimerScreenState extends State<TimerScreen> {
                   ): Container()
                 ],
               ),
-              DropdownButton(
-                value: selectedHousehould,
-                onChanged: (String? newValue){
-                  setState(() {
-                    selectedHousehould = newValue!;
-                  });
-                },
-                items: dropdownItems, 
-
-              ),
+             
               
               ElevatedButton(
                 onPressed: _start,
@@ -109,6 +144,62 @@ class _TimerScreenState extends State<TimerScreen> {
           ],
         ),
       );
+  }
+
+  Container getHouseHoldSelection() {
+    return Container(
+            margin: EdgeInsets.all(8),
+            decoration: Styles.containerDecoration,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                
+                children: [
+                  const Text("Select your household"),
+                  Container(
+                    width: double.infinity,
+                    child: DropdownButton(
+                      value: selectedHousehould,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedHousehould = newValue!;
+                        });
+                      },
+                    items: dropdownItems,
+                    dropdownColor: ThemeColors.secondaryBackground,
+                    isExpanded: true, // Öffnet die Dropdown-Liste in voller Breite
+                  )
+                  ),
+
+                ],
+              ),
+            ),
+          );
+  }
+}
+
+class InfoBox extends StatelessWidget {
+  const InfoBox({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.all(8),
+      decoration: Styles.containerDecoration,
+      child:  Padding(
+        padding:  EdgeInsets.all(16.0),
+           child: Text (
+            "Select your household and start the stopwatch at the same time as your device. when the device is finished, stop the watch and submit the data with the submit button.",
+             style: Styles.infoBoxTextStyle, 
+             overflow: TextOverflow.clip,
+            )
+      ),
+       
+    );
   }
 }
 

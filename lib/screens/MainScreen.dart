@@ -53,25 +53,25 @@ class _MainScreenState extends State<MainScreen> {
         },
       items:  [
         BottomNavigationBarItem(
-        icon: Icon(Icons.watch, color: _currentIndex == 0?ThemeColors.primary:ThemeColors.primaryDisabled),
+        icon: Icon(Icons.timer, color: _currentIndex == 0?ThemeColors.primary:ThemeColors.primaryDisabled),
         label: "Timer",
         backgroundColor: ThemeColors.secondaryBackground
 
       ),
          BottomNavigationBarItem(
-        icon: Icon(Icons.lens, color: _currentIndex == 1?ThemeColors.primary:ThemeColors.primaryDisabled),
+        icon: Icon(Icons.more, color: _currentIndex == 1?ThemeColors.primary:ThemeColors.primaryDisabled),
         label: "Details",
         backgroundColor: ThemeColors.secondaryBackground
 
       ),
        BottomNavigationBarItem(
-        icon: Icon(Icons.label, color: _currentIndex == 2?ThemeColors.primary:ThemeColors.primaryDisabled),
+        icon: Icon(Icons.label_important, color: _currentIndex == 2?ThemeColors.primary:ThemeColors.primaryDisabled),
         label: "Labels",
         backgroundColor: ThemeColors.secondaryBackground
 
       ),
        BottomNavigationBarItem(
-        icon: Icon(Icons.monitor, color: _currentIndex == 3?ThemeColors.primary:ThemeColors.primaryDisabled),
+        icon: Icon(Icons.bar_chart, color: _currentIndex == 3?ThemeColors.primary:ThemeColors.primaryDisabled),
         label: "Chart",
         backgroundColor: ThemeColors.secondaryBackground
 

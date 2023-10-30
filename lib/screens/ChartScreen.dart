@@ -191,7 +191,8 @@ class _ChartScreenState extends State<ChartScreen> {
                   minX: 0,
                   maxX: _dataPoints.length.toDouble() - 1, // Anzahl der Datenpunkte - 1
                   minY: 0,
-                  maxY: getMaxY(),
+                  //maxY: getMaxY(),
+                  maxY: 11,
                   lineBarsData: [
                     getChartData()
                   ],
