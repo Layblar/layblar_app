@@ -35,11 +35,14 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
+      backgroundColor: ThemeColors.primaryBackground,
       appBar: AppBar(title: Text("Hallo")),
       body: _currentWidget,
       bottomNavigationBar: 
       BottomNavigationBar(
+        selectedItemColor: ThemeColors.primary,
+        showUnselectedLabels: true,
+        unselectedLabelStyle: TextStyle(color: ThemeColors.textColor),
         currentIndex: _currentIndex,
         onTap: (index) {
           setState(() => _currentIndex = index);
@@ -47,20 +50,28 @@ class _MainScreenState extends State<MainScreen> {
         },
       items:  [
         BottomNavigationBarItem(
-        icon: Icon(Icons.watch, color: _currentIndex == 0?ThemeColors.primary:ThemeColors.secondary),
-        label: "Timer"
+        icon: Icon(Icons.watch, color: _currentIndex == 0?ThemeColors.primary:ThemeColors.primaryDisabled),
+        label: "Timer",
+        backgroundColor: ThemeColors.secondaryBackground
+
       ),
          BottomNavigationBarItem(
-        icon: Icon(Icons.lens, color: _currentIndex == 1?ThemeColors.primary:ThemeColors.secondary),
+        icon: Icon(Icons.lens, color: _currentIndex == 1?ThemeColors.primary:ThemeColors.primaryDisabled),
         label: "Details",
+        backgroundColor: ThemeColors.secondaryBackground
+
       ),
        BottomNavigationBarItem(
-        icon: Icon(Icons.label, color: _currentIndex == 2?ThemeColors.primary:ThemeColors.secondary),
+        icon: Icon(Icons.label, color: _currentIndex == 2?ThemeColors.primary:ThemeColors.primaryDisabled),
         label: "Labels",
+        backgroundColor: ThemeColors.secondaryBackground
+
       ),
        BottomNavigationBarItem(
-        icon: Icon(Icons.monitor, color: _currentIndex == 3?ThemeColors.primary:ThemeColors.secondary),
+        icon: Icon(Icons.monitor, color: _currentIndex == 3?ThemeColors.primary:ThemeColors.primaryDisabled),
         label: "Chart",
+        backgroundColor: ThemeColors.secondaryBackground
+
       ),
       ]
     ),
