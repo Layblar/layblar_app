@@ -39,7 +39,7 @@ class _ChartScreenState extends State<ChartScreen> {
   String selectedDevice = "";
   bool isDeviceSelected = false;
 
-  bool isChartSelectionEnabled = false;
+  bool isChartSelectionEnabled = true;
 
   void enableStartTime(){
     isEndTimeEnabled = false;
