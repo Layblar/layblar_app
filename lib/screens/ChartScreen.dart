@@ -39,6 +39,8 @@ class _ChartScreenState extends State<ChartScreen> {
   String selectedDevice = "";
   bool isDeviceSelected = false;
 
+  bool isChartSelectionEnabled = false;
+
   void enableStartTime(){
     isEndTimeEnabled = false;
     isStartTimeEnabled = true;
@@ -104,88 +106,101 @@ class _ChartScreenState extends State<ChartScreen> {
         ),
         Expanded(
           flex: 4, 
-          child: Container(
-            margin: const EdgeInsets.only(left: 8, top:8, right: 8, bottom:0),
-            decoration:Styles.containerDecoration,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: LineChart(
-                LineChartData(
-                  
-                  lineTouchData: LineTouchData(
-                     touchCallback: (FlTouchEvent event, LineTouchResponse? lineTouch) {
-
-                       if (lineTouch == null || lineTouch.lineBarSpots == null) {
-                        return;
-                      }
-                      String timeText;
-                      final value = lineTouch.lineBarSpots![0].x;
-                      DateTime time = _dataPoints[value.toInt()].time;
-                      timeText =  '${time.hour}:${time.minute}';
-                      if(isStartTimeEnabled){
-                        setState(() {
-                          startTime = timeText;
-                          selectedStartIndex = lineTouch.lineBarSpots![0].spotIndex;
-
-                          //showingSpots.add(LineBarSpot(_dataPoints[value.toInt()]));
-                          //selectedSpots.add(selectedStartIndex);
-                        });
-                      }
-                      if(isEndTimeEnabled){
-                        setState(() {
-                          endTime = timeText;
-                          selectedEndIndex = lineTouch.lineBarSpots![0].spotIndex;    
-                        });
-                      }
-                  },
-                  touchTooltipData: LineTouchTooltipData(
-                      tooltipBgColor: ThemeColors.primary,
-                      getTooltipItems: (List<LineBarSpot> touchedSpots) {
-                        final List<LineTooltipItem> tooltips = [];
-                        for (final LineBarSpot touchedSpot in touchedSpots) {
-                          final DateTime time = _dataPoints[touchedSpot.x.toInt()].time;
-                          final String timeText = '${time.hour}:${time.minute}';
-                          tooltips.add(LineTooltipItem(timeText, TextStyle(color: ThemeColors.textColor)));
-                        }
-                        return tooltips;
-                      },
-                    ),
-                    ),
-                  gridData: getGridData(),
-                  titlesData: getTilesData(),
-                  borderData: getBorderData(),
-                  minX: 0,
-                  maxX: _dataPoints.length.toDouble() - 1, // Anzahl der Datenpunkte - 1
-                  minY: 0,
-                  //maxY: getMaxY(),
-                  maxY: 11,
-                  lineBarsData: [
-                    getChartData()
-                  ],
-                  showingTooltipIndicators: selectedSpots,
-
-                ),
-              ),
-            ),
-          )
+          child: getChartSection()
         ),
         Expanded(
           flex:4,
           child: SizedBox(
             width: double.infinity,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                getStartTimeSection(),
-                getEndTimeSection(),
-                getSetDeviceSection(),
-                getResetSubmitBtnSection(),
-              ],
-            ),
+            child: isChartSelectionEnabled ? getEnabledChartView():getDisabledChartView(),
           ),
         )
       ],
     );
+  }
+
+
+  Widget getEnabledChartView(){
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+                getStartTimeSection(),
+                getEndTimeSection(),
+                getSetDeviceSection(),
+                getResetSubmitBtnSection(),
+      ]
+    );
+  }
+
+  Widget getDisabledChartView(){
+    return Center(child: Text("For this project, the chart selection was disabled", style: Styles.regularTextStyle,));
+  }
+
+  Container getChartSection() {
+    return Container(
+          margin: const EdgeInsets.only(left: 8, top:8, right: 8, bottom:0),
+          decoration:Styles.containerDecoration,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: LineChart(
+              LineChartData(
+                
+                lineTouchData: LineTouchData(
+                   touchCallback: (FlTouchEvent event, LineTouchResponse? lineTouch) {
+
+                     if (lineTouch == null || lineTouch.lineBarSpots == null) {
+                      return;
+                    }
+                    String timeText;
+                    final value = lineTouch.lineBarSpots![0].x;
+                    DateTime time = _dataPoints[value.toInt()].time;
+                    timeText =  '${time.hour}:${time.minute}';
+                    if(isStartTimeEnabled){
+                      setState(() {
+                        startTime = timeText;
+                        selectedStartIndex = lineTouch.lineBarSpots![0].spotIndex;
+
+                        //showingSpots.add(LineBarSpot(_dataPoints[value.toInt()]));
+                        //selectedSpots.add(selectedStartIndex);
+                      });
+                    }
+                    if(isEndTimeEnabled){
+                      setState(() {
+                        endTime = timeText;
+                        selectedEndIndex = lineTouch.lineBarSpots![0].spotIndex;    
+                      });
+                    }
+                },
+                touchTooltipData: LineTouchTooltipData(
+                    tooltipBgColor: ThemeColors.primary,
+                    getTooltipItems: (List<LineBarSpot> touchedSpots) {
+                      final List<LineTooltipItem> tooltips = [];
+                      for (final LineBarSpot touchedSpot in touchedSpots) {
+                        final DateTime time = _dataPoints[touchedSpot.x.toInt()].time;
+                        final String timeText = '${time.hour}:${time.minute}';
+                        tooltips.add(LineTooltipItem(timeText, TextStyle(color: ThemeColors.textColor)));
+                      }
+                      return tooltips;
+                    },
+                  ),
+                  ),
+                gridData: getGridData(),
+                titlesData: getTilesData(),
+                borderData: getBorderData(),
+                minX: 0,
+                maxX: _dataPoints.length.toDouble() - 1, // Anzahl der Datenpunkte - 1
+                minY: 0,
+                //maxY: getMaxY(),
+                maxY: 11,
+                lineBarsData: [
+                  getChartData()
+                ],
+                showingTooltipIndicators: selectedSpots,
+
+              ),
+            ),
+          ),
+        );
   }
 
   Container getSetDeviceSection() {
