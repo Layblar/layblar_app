@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:layblar_app/DTO/DEviceCardMocksDTO.dart';
 import 'package:layblar_app/Themes/Styles.dart';
 import 'package:layblar_app/Themes/ThemeColors.dart';
+import 'package:layblar_app/WIdgets/DeviceListItem.dart';
 
 
 class TimerScreen extends StatefulWidget {
@@ -22,15 +24,44 @@ class _TimerScreenState extends State<TimerScreen> {
   late Timer _timer;
   bool _isRunning = false;
   String _result = '00:00:00';
-  String selectedHousehould = 'Haushalt 1';
+  String selectedDevice = "";
 
+  List<DeviceListItem> mockedItems = DeviceCardMockDTO.generateCards();
   //get our households
-  List<DropdownMenuItem<String>>  dropdownItems =
-    [
-      DropdownMenuItem(child: Container(color: ThemeColors.secondaryBackground, child: Text("Haushalt 1", style: Styles.regularTextStyle,)),value: "Haushalt 1", ),
-      DropdownMenuItem(child: Container(color: ThemeColors.secondaryBackground, child: Text("Haushalt 2", style: Styles.regularTextStyle,)), value: "Haushalt 2"),
-      DropdownMenuItem(child: Container(color: ThemeColors.secondaryBackground, child: Text("Haushalt 3", style: Styles.regularTextStyle,)),value: "Haushalt 3"),
-    ];
+  List<DropdownMenuItem<String>> dropdownItems = [];
+
+  @override
+  void initState() {
+  super.initState();
+  selectedDevice = mockedItems[0].title;
+  dropdownItems = mockedItems.map((element) {
+    return DropdownMenuItem(
+      child: ListTile(
+        leading: element.imgUrl != "" ?Image.network(element.imgUrl) : null,
+        title: Text(element.title, style: Styles.regularTextStyle),
+      ),
+      value: element.title,
+    );
+    }).toList();
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+
+    return  SizedBox(
+        child: Column(
+          children: [
+            //const InfoBox(),
+            
+            Expanded(flex: 2, child: getHouseHoldSelection()), 
+            Expanded(flex: 7, child: getStopwatchSection(context)),
+            Expanded(flex: 1,child: getSubmitBtnSection(context))   
+        
+          ],
+        ),
+      );
+  }
 
 
   void _start(){
@@ -68,29 +99,6 @@ class _TimerScreenState extends State<TimerScreen> {
     debugPrint("submitted: " + household + ", " + time);
   }
 
-  @override
-  Widget build(BuildContext context) {
-      
-      //infobox
-      //househol selection
-      //time
-      //big cirlce with glow
-      //reset button
-      //sumbit
-    return  SizedBox(
-        child: Column(
-          children: [
-            //const InfoBox(),
-            
-            Expanded(flex: 2, child: getHouseHoldSelection()), 
-            Expanded(flex: 7, child: getStopwatchSection(context)),
-            Expanded(flex: 1,child: getSubmitBtnSection(context))   
-        
-          ],
-        ),
-      );
-  }
-
   Container getSubmitBtnSection(BuildContext context) {
     return Container(
             width: MediaQuery.of(context).size.width,
@@ -99,7 +107,7 @@ class _TimerScreenState extends State<TimerScreen> {
             child: Padding(
               padding: const EdgeInsets.symmetric( vertical: 8.0, horizontal: 32.0),
               child: ElevatedButton(
-                onPressed: ()=>  _submit(selectedHousehould, _result),
+                onPressed: ()=>  _submit(selectedDevice, _result),
                 style: Styles.primaryButtonStyle,
                 child: const Text("Sumbit"),  
               ),
@@ -186,20 +194,26 @@ class _TimerScreenState extends State<TimerScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 
                 children: [
-                  Text("Select your household.", style: Styles.infoBoxTextStyle,),
+                  Text("Select your Device.", style: Styles.infoBoxTextStyle,),
                   SizedBox(
                     width: double.infinity,
-                    child: DropdownButton(
-                      value: selectedHousehould,
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          selectedHousehould = newValue!;
-                        });
-                      },
-                    items: dropdownItems,
-                    dropdownColor: ThemeColors.secondaryBackground,
-                    isExpanded: true, // Öffnet die Dropdown-Liste in voller Breite
-                  )
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton(
+                        value: selectedDevice,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            selectedDevice = newValue!;
+                          });
+                        },
+                      items: dropdownItems,
+                      dropdownColor: ThemeColors.secondaryBackground,
+                      isExpanded: true, // Öffnet die Dropdown-Liste in voller Breite
+                      underline: null,
+                      icon: const Icon(Icons.arrow_drop_down),
+                       // Fügt einen Dropdown-Pfeil hinzu
+                    
+                                      ),
+                    )
                   ),
 
                 ],

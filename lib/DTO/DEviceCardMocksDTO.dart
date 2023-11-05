@@ -1,8 +1,8 @@
-import 'package:layblar_app/WIdgets/DeviceCardItem.dart';
+import 'package:layblar_app/WIdgets/DeviceListItem.dart';
 
 class DeviceCardMockDTO{
 
-    static List<DeviceCardItem> generateCards(){
+    static List<DeviceListItem> generateCards(){
 
       String title1 = "Kaffeemaschine SEACO Hurenson";
       String imgUrl1 = "http://pngimg.com/uploads/coffee_machine/coffee_machine_PNG17259.png";
@@ -15,13 +15,13 @@ class DeviceCardMockDTO{
 
        String title4 = "Glotze";
       String imgUrl4 = "https://pngimg.com/uploads/tv/tv_PNG39240.png";
-      List<DeviceCardItem> items = [];
-      
-              
-      items.add(DeviceCardItem(title: title1, imgUrl: imgUrl1));
-      items.add(DeviceCardItem(title: title2, imgUrl: imgUrl2));
-      items.add(DeviceCardItem(title: title3, imgUrl: imgUrl3));
-      items.add(DeviceCardItem(title: title4, imgUrl: imgUrl4));
+      List<DeviceListItem> items = [];
+
+      items.add( DeviceListItem(title: "", imgUrl: ""));              
+      items.add(DeviceListItem(title: title1, imgUrl: imgUrl1));
+      items.add(DeviceListItem(title: title2, imgUrl: imgUrl2));
+      items.add(DeviceListItem(title: title3, imgUrl: imgUrl3));
+      items.add(DeviceListItem(title: title4, imgUrl: imgUrl4));
 
       return items;
 

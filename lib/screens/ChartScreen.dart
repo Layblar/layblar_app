@@ -7,7 +7,7 @@ import 'package:layblar_app/DTO/DataPointMockDTO.dart';
 import 'package:layblar_app/Themes/Styles.dart';
 import 'package:layblar_app/Themes/ThemeColors.dart';
 
-import '../WIdgets/DeviceCardItem.dart';
+import '../WIdgets/DeviceListItem.dart';
 
 class ChartScreen extends StatefulWidget {
   const ChartScreen({ Key? key }) : super(key: key);
@@ -19,7 +19,7 @@ class ChartScreen extends StatefulWidget {
 class _ChartScreenState extends State<ChartScreen> {
 
   final List<DataPoint> _dataPoints = generateDataPoints();
-  final List<DeviceCardItem> cardMocks = DeviceCardMockDTO.generateCards();
+  final List<DeviceListItem> cardMocks = DeviceCardMockDTO.generateCards();
 
   String startTime = "";
   String endTime = "";
@@ -40,6 +40,54 @@ class _ChartScreenState extends State<ChartScreen> {
   bool isDeviceSelected = false;
 
   bool isChartSelectionEnabled = true;
+
+  List<DeviceListItem> mockedItems = DeviceCardMockDTO.generateCards();
+  List<DropdownMenuItem<String>> dropdownItems = [];
+  
+
+
+
+
+  @override
+  void initState() {
+  super.initState();
+  selectedDevice = mockedItems[0].title;
+  dropdownItems = mockedItems.map((element) {
+    return DropdownMenuItem(
+      child: ListTile(
+        leading: Image.network(element.imgUrl),
+        title: Text(element.title, style: Styles.regularTextStyle),
+      ),
+      value: element.title,
+    );
+    }).toList();
+  }
+
+  
+  
+  @override
+  Widget build(BuildContext context) {
+    return  Column(
+      children: [
+        Expanded(
+          flex: 1,
+          child: getTimeFilterSection()
+        ),
+        Expanded(
+          flex: 4, 
+          child: getChartSection()
+        ),
+        Expanded(
+          flex:4,
+          child: SizedBox(
+            width: double.infinity,
+            child: isChartSelectionEnabled ? getEnabledChartView():getDisabledChartView(),
+          ),
+        )
+      ],
+    );
+  }
+
 
   void enableStartTime(){
     isEndTimeEnabled = false;
@@ -94,29 +142,6 @@ class _ChartScreenState extends State<ChartScreen> {
       });
     }
     
-  }
-  
-  @override
-  Widget build(BuildContext context) {
-    return  Column(
-      children: [
-        Expanded(
-          flex: 1,
-          child: getTimeFilterSection()
-        ),
-        Expanded(
-          flex: 4, 
-          child: getChartSection()
-        ),
-        Expanded(
-          flex:4,
-          child: SizedBox(
-            width: double.infinity,
-            child: isChartSelectionEnabled ? getEnabledChartView():getDisabledChartView(),
-          ),
-        )
-      ],
-    );
   }
 
 
@@ -209,15 +234,28 @@ class _ChartScreenState extends State<ChartScreen> {
                 decoration: Styles.containerDecoration,
                 child: Row(
                   children: [
-                    Expanded(flex: 5, child: Icon(Icons.check_circle, size: 36, color: isDeviceSelected?ThemeColors.tertiary : ThemeColors.primaryDisabled,)),
+                    Expanded(flex: 5, 
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(Icons.check_circle, size: 36, color: selectedDevice!= ""?ThemeColors.tertiary : ThemeColors.primaryDisabled,),
+                          const SizedBox(width: 8,),
+                          Flexible(child: Text(selectedDevice == "" ? "No Device selected" : selectedDevice, overflow: TextOverflow.ellipsis,))
+                        ],
+                      ),
+                    )),
                     Expanded(flex: 5, child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton(onPressed: ()=> openDeviceCataloge(context), child: const Text("Set Device"), style: Styles.tertiaryButtonStyle,),
+                      child: ElevatedButton(onPressed: ()=> showDropDownList(), child: const Text("Set Device"), style: Styles.tertiaryButtonStyle,),
                     )),
                   ],
                 ),
               );
   }
+
+  
 
   Container getResetSubmitBtnSection() {
     return Container(
@@ -236,6 +274,28 @@ class _ChartScreenState extends State<ChartScreen> {
                   ],
                 ),
               );
+  }
+
+  void showDropDownList(){
+    showDialog(context: context, builder: (BuildContext context){
+      return AlertDialog(
+        title: const Text("Select Device"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: mockedItems.map((e) => ListTile(
+            title: Text(e.title),
+            leading: e.imgUrl != "" ? Image.network(e.imgUrl) : null,
+            onTap: () {
+                        setState(() {
+                          selectedDevice = e.title;
+                        });
+                        Navigator.of(context).pop();
+                      },
+          ))
+          .toList()
+        ),
+      );
+    });
   }
 
   Container getEndTimeSection() {
@@ -353,61 +413,7 @@ class _ChartScreenState extends State<ChartScreen> {
   }
 
 
-  void openDeviceCataloge(BuildContext context){
-
-    
-
-    showDialog(context: context, builder: (BuildContext context){
-      return AlertDialog(
-        backgroundColor: ThemeColors.primaryBackground,
-        titleTextStyle: Styles.regularTextStyle,
-       content:  SingleChildScrollView(
-        child: ListBody(
-          children:  [
-              Text("Choose one device from the list below which was used during your predefined time range. The devices are predefined by your research team.", style: Styles.regularTextStyle,),
-              Column(
-                children: [
-                  for (int index = 0; index < cardMocks.length; index += 2)
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            height: 190,
-                            child: DeviceCardItem(
-                              title: cardMocks[index].title,
-                              imgUrl: cardMocks[index].imgUrl,
-                            ),
-                          ),
-                        ),
-                    if (index + 1 < cardMocks.length)
-                        Expanded(
-                          child: Container(
-                            height: 190,
-                            child: DeviceCardItem(
-                            title: cardMocks[index + 1].title,
-                            imgUrl: cardMocks[index + 1].imgUrl,
-                      ),
-                          ),
-                    ),
-                ],
-              ),
-          ],
-        ),
   
-
-             
-        ]),
-       ),
-       actions: [
-        ElevatedButton(onPressed: ()=> Navigator.of(context).pop(), child: Text("Close"), style: Styles.errorButtonStyle,),
-        ElevatedButton(onPressed: (){}, child: Text("Submit"), style: Styles.primaryButtonStyle,)
-
-       ],
-          
-         
-      );
-    });
-  }
 
 
 

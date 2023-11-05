@@ -19,3 +19,13 @@ All notable changes to this project will be documented in this file.
 - Graph view: ALtrnative Inforbox when the feature time range is not enabled
 
 
+## 2023-11-05 - ([Richard Lorenz](https://github.com/fluttervieh))
+
+### Added
+- Settings page to change households and logout in future
+
+
+
+
+
+
