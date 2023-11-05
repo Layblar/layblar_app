@@ -23,6 +23,8 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Settings page to change households and logout in future
+- finshed first prototype of ui for chart and timer view
+- first draft for the labels screen
 
 
 
