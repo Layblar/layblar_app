@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:layblar_app/screens/ChartScreen.dart';
 import 'package:layblar_app/screens/DetailsScreen.dart';
 import 'package:layblar_app/screens/LabelsScreen.dart';
+import 'package:layblar_app/screens/SettingsScreen.dart';
 
 import '../Themes/ThemeColors.dart';
 import 'TimerScreen.dart';
@@ -21,6 +22,8 @@ class _MainScreenState extends State<MainScreen> {
    
   var _currentIndex = 0;
 
+  var _currentHouseHold = "Haushalt 1";
+
 
 
   void _loadScreen(){
@@ -32,14 +35,23 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
+  void _openSettings(){
+    Navigator.of(context).push(MaterialPageRoute(builder: ((BuildContext context) => const SettingsScreen())));
+  }
+
+  //TODO: Open settings
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ThemeColors.primaryBackground,
       appBar: AppBar(
         centerTitle: true,
-        title: const Text("Layblar", textAlign: TextAlign.center,),
-        backgroundColor: ThemeColors.secondaryBackground,),
+        title:  Text(_currentHouseHold, textAlign: TextAlign.center,),
+        backgroundColor: ThemeColors.secondaryBackground,
+        actions: [
+          IconButton(icon: Icon(Icons.settings, color: ThemeColors.textColor,), onPressed: () => _openSettings(),)
+        ],
+        ),
       body: _currentWidget,
       bottomNavigationBar: 
       BottomNavigationBar(
