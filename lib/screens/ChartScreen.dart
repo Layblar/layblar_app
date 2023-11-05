@@ -121,28 +121,7 @@ class _ChartScreenState extends State<ChartScreen> {
     });
   }
 
-  void toggleTimeFilter(String time){
-    if(time == "day"){
-      setState(() {
-        isTodaySelected =true;
-        isWeekSelected = false;
-        isMonthSelected = false;
-      });
-    }else if(time == "week"){
-      setState(() {
-        isTodaySelected =false;
-        isWeekSelected = true;
-        isMonthSelected = false;
-      });
-    }else if(time == "month"){
-      setState(() {
-        isTodaySelected =false;
-        isWeekSelected = false;
-        isMonthSelected = true;
-      });
-    }
-    
-  }
+  
 
 
   Widget getEnabledChartView(){
@@ -376,6 +355,31 @@ class _ChartScreenState extends State<ChartScreen> {
   }
 
   Container getTimeFilterSection() {
+
+    void toggleTimeFilter(String time){
+
+      debugPrint("[------HALLLOOOOO]");
+    if(time == "day"){
+      setState(() {
+        isTodaySelected =true;
+        isWeekSelected = false;
+        isMonthSelected = false;
+      });
+    }else if(time == "week"){
+      setState(() {
+        isTodaySelected =false;
+        isWeekSelected = true;
+        isMonthSelected = false;
+      });
+    }else if(time == "month"){
+      setState(() {
+        isTodaySelected =false;
+        isWeekSelected = false;
+        isMonthSelected = true;
+      });
+    }
+    
+  }
     return Container(
           margin: const EdgeInsets.only(left: 8, right: 8, top: 16, bottom: 8),
           decoration: Styles.containerDecoration,

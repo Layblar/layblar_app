@@ -18,6 +18,7 @@ class DeviceListItem extends StatefulWidget {
 
 //TODO: this is not very nicley codes, later we will use json isntead
 class _DeviceListItemState extends State<DeviceListItem> {
+
   @override
   Widget build(BuildContext context) {
     return DropdownMenuItem(
@@ -29,3 +30,7 @@ class _DeviceListItemState extends State<DeviceListItem> {
     
   }
 }
+
+
+
+
