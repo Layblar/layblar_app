@@ -279,11 +279,12 @@ class _ChartScreenState extends State<ChartScreen> {
   void showDropDownList(){
     showDialog(context: context, builder: (BuildContext context){
       return AlertDialog(
-        title: const Text("Select Device"),
+        backgroundColor: ThemeColors.secondaryBackground,
+        title:  Text("Select Device", style: Styles.infoBoxTextStyle,),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: mockedItems.map((e) => ListTile(
-            title: Text(e.title),
+            title: Text(e.title, style: Styles.regularTextStyle,),
             leading: e.imgUrl != "" ? Image.network(e.imgUrl) : null,
             onTap: () {
                         setState(() {
