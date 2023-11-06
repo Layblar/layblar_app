@@ -163,8 +163,8 @@ class _TimerScreenState extends State<TimerScreen> {
                           : Styles.stopwatchContainerDecorationStopped,
                       child: Center(
                         child: !_isRunning
-                            ? Text("Start", style: Styles.headerTextStyle)
-                            : Text("Stop", style: Styles.headerTextStyle),
+                            ? Text("Start", style: Styles.headerTextStyleSecondary)
+                            : Text("Stop", style: Styles.headerTextStyleSecondary),
                       ),
                     ),
                   ),

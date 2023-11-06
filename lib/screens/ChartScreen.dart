@@ -390,8 +390,8 @@ class _ChartScreenState extends State<ChartScreen> {
                 onTap: ()=> toggleTimeFilter("day"),
                 child: Container(
                   decoration: isTodaySelected?Styles.selctedContainerDecoration:null,
-                  child: const Center(
-                    child: Text("Today"),)),
+                  child:  Center(
+                    child: Text("Today" , style: TextStyle(color: isTodaySelected? ThemeColors.secondaryBackground: ThemeColors.textColor)),)),
               ),),
               Expanded(
                 flex:1,
@@ -399,8 +399,8 @@ class _ChartScreenState extends State<ChartScreen> {
                   onTap: ()=> toggleTimeFilter("week"),
                   child: Container(
                     decoration: isWeekSelected?Styles.selctedContainerDecoration:null,
-                  child: const Center(
-                    child: Text("This Week"),)),
+                  child:  Center(
+                    child: Text("This Week", style: TextStyle(color: isWeekSelected?ThemeColors.secondaryBackground: ThemeColors.textColor),),)),
                 ),
               ),
               Expanded(flex:1, 
@@ -408,8 +408,8 @@ class _ChartScreenState extends State<ChartScreen> {
                 onTap: ()=> toggleTimeFilter("month"),
                 child: Container(
                   decoration: isMonthSelected?Styles.selctedContainerDecoration:null,
-                  child: const Center(
-                    child: Text("This Month"),)),
+                  child:  Center(
+                    child: Text("This Month" , style: TextStyle(color: isMonthSelected?ThemeColors.secondaryBackground: ThemeColors.textColor)),)),
               ),),
 
             ],

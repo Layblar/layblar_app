@@ -80,6 +80,12 @@ class Styles{
     color: ThemeColors.textColor
   );
 
+  static final headerTextStyleSecondary = TextStyle(
+    fontSize: 36,
+    color: ThemeColors.secondaryBackground,
+    fontWeight: FontWeight.bold
+  );
+
   static final regularTextStyle = TextStyle(
     color: ThemeColors.textColor
   );

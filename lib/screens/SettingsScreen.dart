@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:layblar_app/Themes/Styles.dart';
 import 'package:layblar_app/Themes/ThemeColors.dart';
 
+import 'LoginScreen.dart';
+
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({ Key? key }) : super(key: key);
 
@@ -24,7 +26,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           ElevatedButton(onPressed: (){}, child: const Text("Change Household"), style: Styles.primaryButtonStyle,),
-          ElevatedButton(onPressed: (){}, child: const Text("Logout"), style: Styles.errorButtonStyle,),
+          ElevatedButton(onPressed: ()=> logout(), child: const Text("Logout"), style: Styles.errorButtonStyle,),
           ElevatedButton(onPressed: () => navigateBack(), child: const Text("Back"), style: Styles.secondaryButtonStyle,)
         ],
       ),
@@ -35,5 +37,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
 //TODO: apply logic so the household updates, amybe a new call etc
   void navigateBack(){
     Navigator.of(context).pop();
+  }
+
+  void logout(){
+    Navigator.of(context).push(MaterialPageRoute(builder: ((BuildContext context) => const LoginScreen())));
   }
 }

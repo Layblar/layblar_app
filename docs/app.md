@@ -27,7 +27,9 @@ All notable changes to this project will be documented in this file.
 - first draft for the labels screen
 
 
+## 2023-11-06 - ([Richard Lorenz](https://github.com/fluttervieh))
 
-
+### Added
+- Plain UI for the login-screen
 
 
