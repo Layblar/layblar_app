@@ -5,7 +5,8 @@ class Styles{
   static final primaryButtonStyle = ElevatedButton.styleFrom(
     primary: ThemeColors.primary,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-    textStyle: TextStyle(color: ThemeColors.textColor)
+    textStyle: TextStyle(color: ThemeColors.textColor),
+
   );
 
   static final secondaryButtonStyle = ElevatedButton.styleFrom(
@@ -75,12 +76,16 @@ class Styles{
   );
 
   static final headerTextStyle = TextStyle(
-    fontSize: 48,
+    fontSize: 36,
     color: ThemeColors.textColor
   );
 
   static final regularTextStyle = TextStyle(
     color: ThemeColors.textColor
+  );
+
+  static final secondaryTextStyle = TextStyle(
+    color: ThemeColors.primaryBackground
   );
 }
 
