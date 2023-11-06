@@ -31,5 +31,9 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Plain UI for the login-screen
+- Login navigation logic
+
+<img src="img/layblar_login.jpeg" style="height:450px">
+
 
 
