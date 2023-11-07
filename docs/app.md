@@ -37,3 +37,16 @@ All notable changes to this project will be documented in this file.
 
 
 
+
+## 2023-11-07 - ([Richard Lorenz](https://github.com/fluttervieh))
+
+### Added
+- Plain UI for the details apge
+- switch between about and devices list
+- Details Page with mostly plain data for each device
+
+
+
+
+
+

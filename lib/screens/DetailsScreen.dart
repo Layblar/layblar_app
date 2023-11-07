@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:layblar_app/DTO/DEviceCardMocksDTO.dart';
 import 'package:layblar_app/WIdgets/DeviceListItem.dart';
+import 'package:layblar_app/screens/DeviceDetailsScreen.dart';
 
 import '../Themes/Styles.dart';
 import '../Themes/ThemeColors.dart';
@@ -95,7 +96,7 @@ List<DeviceListItem> deviceMocks = DeviceCardMockDTO.generateCards();
                                   child: ListTile(
                                     title: Text(e.title, style: Styles.regularTextStyle),
                                     trailing: IconButton(
-                                      onPressed: () {},
+                                      onPressed: () => navigateToDeviceDetails(e),
                                       icon: Icon(Icons.arrow_forward, color: ThemeColors.textColor),
                                     ),
                                   ),
@@ -164,5 +165,10 @@ List<DeviceListItem> deviceMocks = DeviceCardMockDTO.generateCards();
           ],
         ),
       );
+  }
+
+
+  void navigateToDeviceDetails(DeviceListItem device){
+    Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) =>  DeviceDetailPage(device: device,)));
   }
 }

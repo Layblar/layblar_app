@@ -4,7 +4,7 @@ class DeviceCardMockDTO{
 
     static List<DeviceListItem> generateCards(){
 
-      String title1 = "Kaffeemaschine SEACO Hurenson";
+      String title1 = "Kaffeemaschine SEACO";
       String imgUrl1 = "http://pngimg.com/uploads/coffee_machine/coffee_machine_PNG17259.png";
 
       String title2 = "Waschmaschine";
