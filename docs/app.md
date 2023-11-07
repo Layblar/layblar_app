@@ -45,6 +45,11 @@ All notable changes to this project will be documented in this file.
 - switch between about and devices list
 - Details Page with mostly plain data for each device
 
+<img src="img/layblar_details_about.jpeg" style="height:450px">
+<img src="img/layblar_details_devices.jpeg" style="height:450px">
+<img src="img/layblar_device_info.jpeg" style="height:450px">
+
+
 
 
 
