@@ -39,7 +39,7 @@ class _ChartScreenState extends State<ChartScreen> {
   String selectedDevice = "";
   bool isDeviceSelected = false;
 
-  bool isChartSelectionEnabled = true;
+  bool isChartSelectionEnabled = false;
 
   List<DeviceListItem> mockedItems = DeviceCardMockDTO.generateCards();
   List<DropdownMenuItem<String>> dropdownItems = [];

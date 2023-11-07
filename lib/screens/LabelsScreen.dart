@@ -41,7 +41,7 @@ class _LabelsScreenState extends State<LabelsScreen> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                 Text("Here you can see all the bullshit you've labeled", style: Styles.infoBoxTextStyle,),
+                 Text("Here you can see all the Devices you've labeled", style: Styles.infoBoxTextStyle,),
                  SizedBox(height: 16,),
                  Expanded(
                    child: ListView.builder(

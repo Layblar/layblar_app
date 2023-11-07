@@ -34,7 +34,8 @@ class _TimerScreenState extends State<TimerScreen> {
   void initState() {
   super.initState();
   selectedDevice = mockedItems[0].title;
-  dropdownItems = mockedItems.map((element) {
+  dropdownItems = mockedItems
+  .map((element) {
     return DropdownMenuItem(
       child: ListTile(
         leading: element.imgUrl != "" ?Image.network(element.imgUrl) : null,
