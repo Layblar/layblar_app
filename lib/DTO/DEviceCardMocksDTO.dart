@@ -13,7 +13,7 @@ class DeviceCardMockDTO{
       String title3 = "Der Gerät";
       String imgUrl3 = "https://media.istockphoto.com/photos/kebab-picture-id92189411?k=20&m=92189411&s=612x612&w=0&h=mLL4cWXzSzBV7F0ZhNMI41DE3T8AddNdBSqH0Yi5rjs=";
 
-       String title4 = "Glotze";
+       String title4 = "Fernseher Samsung";
       String imgUrl4 = "https://pngimg.com/uploads/tv/tv_PNG39240.png";
       List<DeviceListItem> items = [];
 

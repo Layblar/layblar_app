@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:layblar_app/Themes/Styles.dart';
 import 'package:layblar_app/Themes/ThemeColors.dart';
+import 'package:layblar_app/screens/CHooseProjectScreen.dart';
 import 'package:layblar_app/screens/MainScreen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -113,7 +114,7 @@ void validateUser(){
 }
 
 void navigateIfSuccessful(){
-      Navigator.of(context).push(MaterialPageRoute(builder: ((BuildContext context) => const MainScreen())));
+      Navigator.of(context).push(MaterialPageRoute(builder: ((BuildContext context) => const ChooseProjectScreen())));
 }
 
   Container getHeaderSection() {

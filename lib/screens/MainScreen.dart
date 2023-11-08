@@ -37,7 +37,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void _openSettings(){
-    Navigator.of(context).push(MaterialPageRoute(builder: ((BuildContext context) => const SettingsScreen())));
+    Navigator.of(context).push(MaterialPageRoute(builder: ((BuildContext context) => const SettingsScreen(currentProject: "Project 1",))));
   }
 
   //TODO: Open settings

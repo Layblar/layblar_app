@@ -5,18 +5,33 @@ import 'package:layblar_app/Themes/ThemeColors.dart';
 import 'LoginScreen.dart';
 
 class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({ Key? key }) : super(key: key);
+  const SettingsScreen({ required this.currentProject, Key? key }) : super(key: key);
+
+  final String currentProject;
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+
+
+  List<String> availableProjects = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    availableProjects = ["Project 1, Project 2, Project 3"];
+  }
   @override
   Widget build(BuildContext context) {
+
+    
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Settings"),
+        title:  Text("Settings", style: Styles.regularTextStyle,),
+        centerTitle: true,
         backgroundColor: ThemeColors.secondaryBackground,
         leading: IconButton(icon: Icon(Icons.arrow_back, color: ThemeColors.textColor,), onPressed: ()=> navigateBack(),),
       ),
@@ -25,9 +40,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          ElevatedButton(onPressed: (){}, child: const Text("Change Household"), style: Styles.primaryButtonStyle,),
-          ElevatedButton(onPressed: ()=> logout(), child: const Text("Logout"), style: Styles.errorButtonStyle,),
-          ElevatedButton(onPressed: () => navigateBack(), child: const Text("Back"), style: Styles.secondaryButtonStyle,)
+          Text("Current Project: " + widget.currentProject),
+          Row(
+            children: [
+              Expanded(child: ElevatedButton(onPressed: ()=> openProjectsDialoge(), child: const Text("Change Project"), style: Styles.primaryButtonStyle,)),
+            ],
+          ),
+          Row(
+            children: [
+              Expanded(child: ElevatedButton(onPressed: ()=> logout(), child: const Text("Logout"), style: Styles.errorButtonStyle,)),
+            ],
+          ),
+          Row(
+            children: [
+              Expanded(child: ElevatedButton(onPressed: () => navigateBack(), child: const Text("Back"), style: Styles.secondaryButtonStyle,)),
+            ],
+          )
         ],
       ),
     );
@@ -41,5 +69,35 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   void logout(){
     Navigator.of(context).push(MaterialPageRoute(builder: ((BuildContext context) => const LoginScreen())));
+  }
+
+
+  //TODO: Dynamic projects
+  void openProjectsDialoge(){
+    String selectedProject = "";
+    debugPrint("[-------CURRENT----]" +  widget.currentProject);
+    showDialog(context: context, builder: (BuildContext context){
+      return AlertDialog(
+        title: Text("Change Project"),
+        content:Column(
+          mainAxisSize: MainAxisSize.min,
+          children: 
+              availableProjects.map((e) => GestureDetector(
+                onTap: () => setState(() {
+                
+                  selectedProject = e;
+                }),
+                child: Container(
+                  color: widget.currentProject == e? ThemeColors.primary: ThemeColors.primaryBackground,
+                  child: ListTile(title: Text(e, style: TextStyle(color: widget.currentProject == e? ThemeColors.primaryBackground: ThemeColors.textColor,),)),
+                          ),
+              )).toList(),
+        ),
+        actions: [
+          ElevatedButton(onPressed: ()=> Navigator.of(context).pop(), child: Text("Cancel"), style: Styles.errorButtonStyle,),
+          ElevatedButton(onPressed: (){}, child: Text("Change Project"), style: Styles.primaryButtonStyle,)
+        ],
+      );
+    });
   }
 }
