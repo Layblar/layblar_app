@@ -37,7 +37,7 @@ class _ChooseProjectScreenState extends State<ChooseProjectScreen> {
             ),
             Row(
               children: [
-                Expanded(child: ElevatedButton(onPressed: (){}, child: Text("Proceed"), style: Styles.primaryButtonStyle,)),
+                Expanded(child: ElevatedButton(onPressed: ()=> navigateIfSuccessful(), child: Text("Proceed"), style: Styles.primaryButtonStyle,)),
               ],
             )
           ],
