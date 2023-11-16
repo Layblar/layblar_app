@@ -50,6 +50,16 @@ All notable changes to this project will be documented in this file.
 <img src="img/layblar_device_info.jpeg" style="height:450px">
 
 
+## 2023-11-16 - ([Richard Lorenz](https://github.com/fluttervieh))
+
+### Updated
+- Chart selection View according to Coach's feedback
+- added a slider for the dynamic chart time selection
+
+
+
+
+
 
 
 
