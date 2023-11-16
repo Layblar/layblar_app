@@ -79,17 +79,27 @@ class _ChartScreenState extends State<ChartScreen> {
       children: [
         Expanded(
           flex: 1,
+          child:getSetDeviceSection(),
+        ),
+        Expanded(
+          flex: 1,
           child: getTimeFilterSection()
         ),
         Expanded(
-          flex: 4, 
+          flex: 5,
           child: getChartWithSliderSection(_dateMin, _dateMax, _dateValues),
         ),
         Expanded(
-          flex:4,
+          flex: 2,
           child: SizedBox(
             width: double.infinity,
-            child: isChartSelectionEnabled ? getEnabledChartView():getDisabledChartView(),
+            child:  Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                getTimeSection(),
+                getResetSubmitBtnSection(),
+              ]
+            )
           ),
         )
       ],
@@ -178,17 +188,6 @@ class _ChartScreenState extends State<ChartScreen> {
   
 
 
-  Widget getEnabledChartView(){
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-                getStartTimeSection(),
-                getEndTimeSection(),
-                getSetDeviceSection(),
-                getResetSubmitBtnSection(),
-      ]
-    );
-  }
 
   Widget getDisabledChartView(){
     return Center(child: Text("For this project, the chart selection was disabled", style: Styles.regularTextStyle,));
@@ -198,25 +197,26 @@ class _ChartScreenState extends State<ChartScreen> {
 
   Container getSetDeviceSection() {
     return Container(
-                margin: const EdgeInsets.only(left: 8, right: 8),
+              margin: const EdgeInsets.only(left: 8, right: 8, top: 16, bottom: 0),
                 decoration: Styles.containerDecoration,
                 child: Row(
                   children: [
-                    Expanded(flex: 5, 
+                   
+                    Expanded(flex: 5, child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(onPressed: ()=> showDropDownList(), child:  Text(selectedDevice== ""?"Choose Device":"Change Device",  style: Styles.secondaryTextStyle), style: Styles.secondaryButtonStyle,),
+                    )),
+                     Expanded(flex: 5, 
                     child: Padding(
                       padding: const EdgeInsets.only(left: 8.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Icon(Icons.check_circle, size: 36, color: selectedDevice!= ""?ThemeColors.tertiary : ThemeColors.primaryDisabled,),
+                          Icon(Icons.check_circle, size: 36, color: selectedDevice!= ""?ThemeColors.secondary : ThemeColors.primaryDisabled,),
                           const SizedBox(width: 8,),
                           Flexible(child: Text(selectedDevice == "" ? "No Device selected" : selectedDevice, overflow: TextOverflow.ellipsis,))
                         ],
                       ),
-                    )),
-                    Expanded(flex: 5, child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton(onPressed: ()=> showDropDownList(), child: const Text("Set Device"), style: Styles.tertiaryButtonStyle,),
                     )),
                   ],
                 ),
@@ -233,11 +233,11 @@ class _ChartScreenState extends State<ChartScreen> {
                   children: [
                     Expanded(child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton(onPressed: ()=> onReset(), child: const Text("Reset"), style: Styles.errorButtonStyle,),
+                      child: ElevatedButton(onPressed: ()=> onReset(), child:  Text("Reset", style: Styles.secondaryTextStyle,), style: Styles.errorButtonStyle,),
                     )),
                     Expanded(child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton(onPressed: ()=> onSubmit(), child: const Text("Submit"), style: Styles.primaryButtonStyle,),
+                      child: ElevatedButton(onPressed: ()=> onSubmit(), child:  Text("Save Lable" , style: Styles.secondaryTextStyle), style: Styles.primaryButtonStyle,),
                     )),
                   ],
                 ),
@@ -248,7 +248,7 @@ class _ChartScreenState extends State<ChartScreen> {
     showDialog(context: context, builder: (BuildContext context){
       return AlertDialog(
         backgroundColor: ThemeColors.secondaryBackground,
-        title:  Text("Select Device", style: Styles.infoBoxTextStyle,),
+        title:  Text("Chose your Device from the List below.", style: Styles.infoBoxTextStyle,),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: mockedItems.map((e) => ListTile(
@@ -267,45 +267,9 @@ class _ChartScreenState extends State<ChartScreen> {
     });
   }
 
-  Container getEndTimeSection() {
-    return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 8),
-                padding: const EdgeInsets.all(8),
-                decoration: Styles.containerDecoration,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Expanded(
-                      flex: 5,
-                      child: ElevatedButton(
-                        onPressed: ()=> enableEndTime(), 
-                        child: const Text("Set End Time"), 
-                        style: Styles.secondaryButtonStyle,
-                      ),
-                    ),
-                    Expanded(flex: 1,child: Container()),
-                    Expanded(
-                      flex: 4,
-                      child: Row(
-                        children: [
-                          Expanded(flex: 1, child:  Text("End Time:")),
-                          Expanded(
-                            flex: 1,
-                            child: Container(
-                              decoration:Styles.primaryBackgroundContainerDecoration,
-                              child: Center(
-                                child: Text(endTime)))),
-                        ],
-                      ),
-                    )
-                    
-                  ],
-                )
-              );
-  }
+ 
 
-  Container getStartTimeSection() {
+  Container getTimeSection() {
     return Container(
                 margin: const EdgeInsets.symmetric(horizontal: 8),
                 padding: const EdgeInsets.all(8),
@@ -314,17 +278,25 @@ class _ChartScreenState extends State<ChartScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     mainAxisSize: MainAxisSize.max,
                   children: [
+                   Expanded(
+                     flex: 1, 
+                     child: Padding(
+                       padding: const EdgeInsets.all(8.0),
+                       child: Row(
+                            children: [
+                              Expanded(flex: 1, child:  Text("End Time:")),
+                              Expanded(
+                                flex: 1,
+                                child: Container(
+                                  decoration:Styles.primaryBackgroundContainerDecoration,
+                                  child: Center(
+                                    child: Text(endTime)))),
+                            ],
+                          ),
+                     ),
+                   ),
                     Expanded(
-                      flex: 5,
-                      child: ElevatedButton(
-                        onPressed: ()=> enableStartTime(), 
-                        child: const Text("Set Start Time"), 
-                        style: Styles.primaryButtonStyle,
-                      ),
-                    ),
-                    Expanded(flex: 1,child: Container()),
-                    Expanded(
-                      flex: 4,
+                      flex: 1,
                       child: Row(
                         children: [
                            Expanded(flex: 1, child:  Text("Start Time:")),
@@ -378,6 +350,7 @@ class _ChartScreenState extends State<ChartScreen> {
               child: GestureDetector(
                 onTap: ()=> toggleTimeFilter("day"),
                 child: Container(
+                  margin: const EdgeInsets.all(8),
                   decoration: isTodaySelected?Styles.selctedContainerDecoration:null,
                   child:  Center(
                     child: Text("Today" , style: TextStyle(color: isTodaySelected? ThemeColors.secondaryBackground: ThemeColors.textColor)),)),
@@ -387,6 +360,7 @@ class _ChartScreenState extends State<ChartScreen> {
                 child: GestureDetector(
                   onTap: ()=> toggleTimeFilter("week"),
                   child: Container(
+                    margin: const EdgeInsets.all(8),
                     decoration: isWeekSelected?Styles.selctedContainerDecoration:null,
                   child:  Center(
                     child: Text("This Week", style: TextStyle(color: isWeekSelected?ThemeColors.secondaryBackground: ThemeColors.textColor),),)),
@@ -396,6 +370,7 @@ class _ChartScreenState extends State<ChartScreen> {
               child: GestureDetector(
                 onTap: ()=> toggleTimeFilter("month"),
                 child: Container(
+                  margin: const EdgeInsets.all(8),
                   decoration: isMonthSelected?Styles.selctedContainerDecoration:null,
                   child:  Center(
                     child: Text("This Month" , style: TextStyle(color: isMonthSelected?ThemeColors.secondaryBackground: ThemeColors.textColor)),)),
