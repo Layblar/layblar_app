@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:layblar_app/DTO/DEviceCardMocksDTO.dart';
 import 'package:layblar_app/Themes/Styles.dart';
 import 'package:layblar_app/Themes/ThemeColors.dart';
 import 'package:layblar_app/WIdgets/DeviceListItem.dart';

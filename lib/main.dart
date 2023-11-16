@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:layblar_app/Themes/ThemeColors.dart';
-import 'package:layblar_app/screens/ChartScreen.dart';
 import 'package:layblar_app/screens/LoginScreen.dart';
-import 'package:layblar_app/screens/MainScreen.dart';
-import 'package:layblar_app/screens/TimerScreen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -23,14 +20,11 @@ class MyApp extends StatelessWidget {
      theme: ThemeData(
       primaryColor: ThemeColors.primary,
       colorScheme: ColorScheme.fromSwatch(primarySwatch: buildMaterialColor(ThemeColors.primary)),
-       buttonTheme: ButtonThemeData(
-          textTheme: ButtonTextTheme.primary, // Dies setzt die Textfarbe für ElevatedButtons auf die primäre Textfarbe des Themes
-        ),
-     
+       
 
         textTheme: TextTheme(
-          bodyText1: TextStyle(color: ThemeColors.textColor),
-          bodyText2: TextStyle(),
+          bodyLarge: TextStyle(color: ThemeColors.textColor),
+          bodyMedium: TextStyle(),
         ).apply(
           bodyColor: ThemeColors.textColor,
           

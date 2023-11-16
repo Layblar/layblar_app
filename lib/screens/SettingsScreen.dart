@@ -1,3 +1,4 @@
+// ignore: file_names
 import 'package:flutter/material.dart';
 import 'package:layblar_app/Themes/Styles.dart';
 import 'package:layblar_app/Themes/ThemeColors.dart';
@@ -74,18 +75,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   //TODO: Dynamic projects
   void openProjectsDialoge(){
-    String selectedProject = "";
     debugPrint("[-------CURRENT----]" +  widget.currentProject);
     showDialog(context: context, builder: (BuildContext context){
       return AlertDialog(
-        title: Text("Change Project"),
+        title: const Text("Change Project"),
         content:Column(
           mainAxisSize: MainAxisSize.min,
           children: 
               availableProjects.map((e) => GestureDetector(
                 onTap: () => setState(() {
                 
-                  selectedProject = e;
                 }),
                 child: Container(
                   color: widget.currentProject == e? ThemeColors.primary: ThemeColors.primaryBackground,
@@ -94,8 +93,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               )).toList(),
         ),
         actions: [
-          ElevatedButton(onPressed: ()=> Navigator.of(context).pop(), child: Text("Cancel"), style: Styles.errorButtonStyle,),
-          ElevatedButton(onPressed: (){}, child: Text("Change Project"), style: Styles.primaryButtonStyle,)
+          ElevatedButton(onPressed: ()=> Navigator.of(context).pop(), child: const Text("Cancel"), style: Styles.errorButtonStyle,),
+          ElevatedButton(onPressed: (){}, child: const Text("Change Project"), style: Styles.primaryButtonStyle,)
         ],
       );
     });

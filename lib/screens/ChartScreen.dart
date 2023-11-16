@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +5,10 @@ import 'package:layblar_app/DTO/DEviceCardMocksDTO.dart';
 import 'package:layblar_app/DTO/DataPointMockDTO.dart';
 import 'package:layblar_app/Themes/Styles.dart';
 import 'package:layblar_app/Themes/ThemeColors.dart';
+import 'package:syncfusion_flutter_charts/charts.dart' hide LabelPlacement;
+import 'package:syncfusion_flutter_sliders/sliders.dart';
+import 'package:intl/intl.dart';
+
 
 import '../WIdgets/DeviceListItem.dart';
 
@@ -21,6 +24,10 @@ class _ChartScreenState extends State<ChartScreen> {
   final List<DataPoint> _dataPoints = generateDataPoints();
   final List<DeviceListItem> cardMocks = DeviceCardMockDTO.generateCards();
 
+  final belowBarDataGradient = LinearGradient(colors: [ThemeColors.primary.withOpacity(0.8), ThemeColors.secondary.withOpacity(0.8)]);
+
+
+ 
   String startTime = "";
   String endTime = "";
 
@@ -39,13 +46,10 @@ class _ChartScreenState extends State<ChartScreen> {
   String selectedDevice = "";
   bool isDeviceSelected = false;
 
-  bool isChartSelectionEnabled = false;
+  bool isChartSelectionEnabled = true;
 
   List<DeviceListItem> mockedItems = DeviceCardMockDTO.generateCards();
   List<DropdownMenuItem<String>> dropdownItems = [];
-  
-
-
 
 
   @override
@@ -63,203 +67,81 @@ class _ChartScreenState extends State<ChartScreen> {
     }).toList();
   }
 
-  
-  
   @override
   Widget build(BuildContext context) {
+
+
+
+    DateTime _dateMin = _dataPoints[0].time;
+
+
+    DateTime _dateMax = _dataPoints[_dataPoints.length - 1].time;
+    SfRangeValues _dateValues = SfRangeValues(_dateMin, _dateMax);
+
     return  Column(
       children: [
+        Expanded(
+          flex: 1,
+          child:getSetDeviceSection(),
+        ),
         Expanded(
           flex: 1,
           child: getTimeFilterSection()
         ),
         Expanded(
-          flex: 4, 
-          child: getChartSection()
+          flex: 5,
+          child: getChartWithSliderSection(_dateMin, _dateMax, _dateValues),
         ),
         Expanded(
-          flex:4,
+          flex: 2,
           child: SizedBox(
             width: double.infinity,
-            child: isChartSelectionEnabled ? getEnabledChartView():getDisabledChartView(),
+            child:  Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                getTimeSection(),
+                getResetSubmitBtnSection(),
+              ]
+            )
           ),
         )
       ],
     );
   }
 
-
-  void enableStartTime(){
-    isEndTimeEnabled = false;
-    isStartTimeEnabled = true;
-  }
-
-  void enableEndTime(){
-    isStartTimeEnabled = false;
-    isEndTimeEnabled = true;
-  }
-
-  void onSubmit (){
-    setState(() {
-      isEndTimeEnabled = false;
-      isStartTimeEnabled = false;
-      startTime = "";
-      endTime = "";
-      selectedStartIndex = null;
-      selectedEndIndex = null;
-    });
-  }
-
-  void onReset (){
-    setState(() {
-      isEndTimeEnabled = false;
-      isStartTimeEnabled = false;
-      startTime = "";
-      endTime = "";
-      selectedStartIndex = null;
-      selectedEndIndex = null;
-    });
-  }
-
-  
-
-
-  Widget getEnabledChartView(){
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-                getStartTimeSection(),
-                getEndTimeSection(),
-                getSetDeviceSection(),
-                getResetSubmitBtnSection(),
-      ]
-    );
-  }
-
-  Widget getDisabledChartView(){
-    return Center(child: Text("For this project, the chart selection was disabled", style: Styles.regularTextStyle,));
-  }
-
-  Container getChartSection() {
-    return Container(
-          margin: const EdgeInsets.only(left: 8, top:8, right: 8, bottom:0),
-          decoration:Styles.containerDecoration,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: LineChart(
-              LineChartData(
-                
-                lineTouchData: LineTouchData(
-                   touchCallback: (FlTouchEvent event, LineTouchResponse? lineTouch) {
-
-                     if (lineTouch == null || lineTouch.lineBarSpots == null) {
-                      return;
-                    }
-                    String timeText;
-                    final value = lineTouch.lineBarSpots![0].x;
-                    DateTime time = _dataPoints[value.toInt()].time;
-                    timeText =  '${time.hour}:${time.minute}';
-                    if(isStartTimeEnabled){
-                      setState(() {
-                        startTime = timeText;
-                        selectedStartIndex = lineTouch.lineBarSpots![0].spotIndex;
-
-                        //showingSpots.add(LineBarSpot(_dataPoints[value.toInt()]));
-                        //selectedSpots.add(selectedStartIndex);
-                      });
-                    }
-                    if(isEndTimeEnabled){
-                      setState(() {
-                        endTime = timeText;
-                        selectedEndIndex = lineTouch.lineBarSpots![0].spotIndex;    
-                      });
-                    }
-                },
-                touchTooltipData: LineTouchTooltipData(
-                    tooltipBgColor: ThemeColors.primary,
-                    getTooltipItems: (List<LineBarSpot> touchedSpots) {
-                      final List<LineTooltipItem> tooltips = [];
-                      for (final LineBarSpot touchedSpot in touchedSpots) {
-                        final DateTime time = _dataPoints[touchedSpot.x.toInt()].time;
-                        final String timeText = '${time.hour}:${time.minute}';
-                        tooltips.add(LineTooltipItem(timeText, TextStyle(color: ThemeColors.textColor)));
-                      }
-                      return tooltips;
-                    },
-                  ),
-                  ),
-                gridData: getGridData(),
-                titlesData: getTilesData(),
-                borderData: getBorderData(),
-                minX: 0,
-                maxX: _dataPoints.length.toDouble() - 1, // Anzahl der Datenpunkte - 1
-                minY: 0,
-                //maxY: getMaxY(),
-                maxY: 11,
-                lineBarsData: [
-                  getChartData()
-                ],
-                showingTooltipIndicators: selectedSpots,
-
-              ),
-            ),
-          ),
-        );
-  }
-
   Container getSetDeviceSection() {
     return Container(
-                margin: const EdgeInsets.only(left: 8, right: 8),
+              margin: const EdgeInsets.only(left: 8, right: 8, top: 16, bottom: 0),
                 decoration: Styles.containerDecoration,
                 child: Row(
                   children: [
-                    Expanded(flex: 5, 
+                   
+                    Expanded(flex: 5, child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(onPressed: ()=> showDropDownList(), child:  Text(selectedDevice== ""?"Choose Device":"Change Device",  style: Styles.secondaryTextStyle), style: Styles.secondaryButtonStyle,),
+                    )),
+                     Expanded(flex: 5, 
                     child: Padding(
                       padding: const EdgeInsets.only(left: 8.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Icon(Icons.check_circle, size: 36, color: selectedDevice!= ""?ThemeColors.tertiary : ThemeColors.primaryDisabled,),
+                          Icon(Icons.check_circle, size: 36, color: selectedDevice!= ""?ThemeColors.secondary : ThemeColors.primaryDisabled,),
                           const SizedBox(width: 8,),
                           Flexible(child: Text(selectedDevice == "" ? "No Device selected" : selectedDevice, overflow: TextOverflow.ellipsis,))
                         ],
                       ),
                     )),
-                    Expanded(flex: 5, child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton(onPressed: ()=> showDropDownList(), child: const Text("Set Device"), style: Styles.tertiaryButtonStyle,),
-                    )),
                   ],
                 ),
               );
   }
 
-  
-
-  Container getResetSubmitBtnSection() {
-    return Container(
-                margin: const EdgeInsets.only(left: 8, right: 8),
-                decoration: Styles.containerDecoration,
-                child: Row(
-                  children: [
-                    Expanded(child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton(onPressed: ()=> onReset(), child: const Text("Reset"), style: Styles.errorButtonStyle,),
-                    )),
-                    Expanded(child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton(onPressed: ()=> onSubmit(), child: const Text("Submit"), style: Styles.primaryButtonStyle,),
-                    )),
-                  ],
-                ),
-              );
-  }
-
-  void showDropDownList(){
+   void showDropDownList(){
     showDialog(context: context, builder: (BuildContext context){
       return AlertDialog(
         backgroundColor: ThemeColors.secondaryBackground,
-        title:  Text("Select Device", style: Styles.infoBoxTextStyle,),
+        title:  Text("Chose your Device from the List below.", style: Styles.infoBoxTextStyle,),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: mockedItems.map((e) => ListTile(
@@ -278,83 +160,7 @@ class _ChartScreenState extends State<ChartScreen> {
     });
   }
 
-  Container getEndTimeSection() {
-    return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 8),
-                padding: const EdgeInsets.all(8),
-                decoration: Styles.containerDecoration,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Expanded(
-                      flex: 5,
-                      child: ElevatedButton(
-                        onPressed: ()=> enableEndTime(), 
-                        child: const Text("Set End Time"), 
-                        style: Styles.secondaryButtonStyle,
-                      ),
-                    ),
-                    Expanded(flex: 1,child: Container()),
-                    Expanded(
-                      flex: 4,
-                      child: Row(
-                        children: [
-                          const Expanded(flex: 1, child:  Text("End Time:")),
-                          Expanded(
-                            flex: 1,
-                            child: Container(
-                              decoration:Styles.primaryBackgroundContainerDecoration,
-                              child: Center(
-                                child: Text(endTime)))),
-                        ],
-                      ),
-                    )
-                    
-                  ],
-                )
-              );
-  }
-
-  Container getStartTimeSection() {
-    return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 8),
-                padding: const EdgeInsets.all(8),
-                decoration: Styles.containerDecoration,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Expanded(
-                      flex: 5,
-                      child: ElevatedButton(
-                        onPressed: ()=> enableStartTime(), 
-                        child: const Text("Set Start Time"), 
-                        style: Styles.primaryButtonStyle,
-                      ),
-                    ),
-                    Expanded(flex: 1,child: Container()),
-                    Expanded(
-                      flex: 4,
-                      child: Row(
-                        children: [
-                          const Expanded(flex: 1, child:  Text("Start Time:")),
-                          Expanded(
-                            flex: 1,
-                            child: Container(
-                              decoration:Styles.primaryBackgroundContainerDecoration,
-                              child: Center(
-                                child: Text(startTime)))),
-                        ],
-                      ),
-                    )
-                    
-                  ],
-                )
-              );
-  }
-
-  Container getTimeFilterSection() {
+   Container getTimeFilterSection() {
 
     void toggleTimeFilter(String time){
 
@@ -389,6 +195,7 @@ class _ChartScreenState extends State<ChartScreen> {
               child: GestureDetector(
                 onTap: ()=> toggleTimeFilter("day"),
                 child: Container(
+                  margin: const EdgeInsets.all(8),
                   decoration: isTodaySelected?Styles.selctedContainerDecoration:null,
                   child:  Center(
                     child: Text("Today" , style: TextStyle(color: isTodaySelected? ThemeColors.secondaryBackground: ThemeColors.textColor)),)),
@@ -398,6 +205,7 @@ class _ChartScreenState extends State<ChartScreen> {
                 child: GestureDetector(
                   onTap: ()=> toggleTimeFilter("week"),
                   child: Container(
+                    margin: const EdgeInsets.all(8),
                     decoration: isWeekSelected?Styles.selctedContainerDecoration:null,
                   child:  Center(
                     child: Text("This Week", style: TextStyle(color: isWeekSelected?ThemeColors.secondaryBackground: ThemeColors.textColor),),)),
@@ -407,6 +215,7 @@ class _ChartScreenState extends State<ChartScreen> {
               child: GestureDetector(
                 onTap: ()=> toggleTimeFilter("month"),
                 child: Container(
+                  margin: const EdgeInsets.all(8),
                   decoration: isMonthSelected?Styles.selctedContainerDecoration:null,
                   child:  Center(
                     child: Text("This Month" , style: TextStyle(color: isMonthSelected?ThemeColors.secondaryBackground: ThemeColors.textColor)),)),
@@ -418,76 +227,175 @@ class _ChartScreenState extends State<ChartScreen> {
   }
 
 
+  Container getChartWithSliderSection(DateTime _dateMin, DateTime _dateMax, SfRangeValues _dateValues) {
+    return Container(
+          child: Stack(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: Center(
+                // ignore: missing_required_param
+                child: SfRangeSelector(
+                  min: _dateMin,
+                  max: _dateMax,
+                  initialValues: _dateValues,
+                  interval: 1,
+                  dateIntervalType: DateIntervalType.hours,
+                  dateFormat: DateFormat.H(),
+                  showTicks: false,
+                  showLabels: false,
+                  onChanged: (SfRangeValues values){
+                    setState(() { 
+                      startTime = DateFormat('HH:mm').format(values.start);
+                      endTime =  DateFormat('HH:mm').format(values.end);
+                    });
+                  },
+                  child: SizedBox(
+                    child: SfCartesianChart(
+                      margin: EdgeInsets.zero,
+                      primaryXAxis: DateTimeAxis(
+                        minimum: _dateMin,
+                        maximum: _dateMax,
+                        isVisible: true,
+                      ),
+                      primaryYAxis: NumericAxis(
+                        name: "kw/h",
+                        isVisible: true, 
+                        maximum: (getMaxEngeryConsumtion(_dataPoints) + 1) //for a little extra padding ;)
+                      ),
+                      series: <SplineAreaSeries<DataPoint, DateTime>>[
+                        SplineAreaSeries<DataPoint, DateTime>(
+                          gradient: belowBarDataGradient,
+                            dataSource: _dataPoints,
+                            xValueMapper: (DataPoint p, int index) => p.time,
+                            yValueMapper: (DataPoint p, int index) => p.energyConsumption)
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ));
+  }
+
+   Container getTimeSection() {
+    return Container(
+                margin: const EdgeInsets.symmetric(horizontal: 8),
+                padding: const EdgeInsets.all(8),
+                decoration: Styles.containerDecoration,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.max,
+                  children: [
+
+                     Expanded(
+                      flex: 1,
+                      child: Row(
+                        children: [
+                           const Expanded(flex: 3, child:  Text("Start:")),
+                          Expanded(
+                            flex: 7,
+                            child: Container(
+                              padding: const EdgeInsets.only(left: 10),
+                              decoration:Styles.primaryBackgroundContainerDecoration,
+                              child: Center(
+                                child: Text(startTime)))),
+                        ],
+                      ),
+                    ),
+                   Expanded(
+                     flex: 1, 
+                     child: Padding(
+                       padding: const EdgeInsets.all(8.0),
+                       child: Row(
+                            children: [
+                              const Expanded(flex: 3, child:  Text("End:")),
+                              Expanded(
+                                flex: 7,
+                                child: Container(
+                                  padding: const EdgeInsets.only(left: 10),
+                                  decoration:Styles.primaryBackgroundContainerDecoration,
+                                  child: Center(
+                                    child: Text(endTime)))),
+                            ],
+                          ),
+                     ),
+                   ),
+                   
+                    
+                  ],
+                )
+              );
+  }
+
+  Container getResetSubmitBtnSection() {
+    return Container(
+                margin: const EdgeInsets.only(left: 8, right: 8),
+                decoration: Styles.containerDecoration,
+                child: Row(
+                  children: [
+                    Expanded(child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(onPressed: ()=> onReset(), child:  Text("Reset", style: Styles.secondaryTextStyle,), style: Styles.errorButtonStyle,),
+                    )),
+                    Expanded(child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(onPressed: ()=> onSubmit(), child:  Text("Save Label" , style: Styles.secondaryTextStyle), style: Styles.primaryButtonStyle,),
+                    )),
+                  ],
+                ),
+              );
+  }
+
+
+  void enableStartTime(){
+    isEndTimeEnabled = false;
+    isStartTimeEnabled = true;
+  }
+
+  void enableEndTime(){
+    isStartTimeEnabled = false;
+    isEndTimeEnabled = true;
+  }
+
+  void onSubmit (){
+    setState(() {
+      isEndTimeEnabled = false;
+      isStartTimeEnabled = false;
+      startTime = "";
+      endTime = "";
+      selectedStartIndex = null;
+      selectedEndIndex = null;
+    });
+  }
+
+  void onReset (){
+    setState(() {
+      isEndTimeEnabled = false;
+      isStartTimeEnabled = false;
+      startTime = "";
+      endTime = "";
+      selectedStartIndex = null;
+      selectedEndIndex = null;
+      selectedDevice = "";
+    });
+  }
+
+  
   
 
+  
 
+  
 
-  //chart setup/customization stuff
-  Widget getTitles (double value, TitleMeta meta){
-    String timeText;
-    int index = value.toInt();
-    DateTime time = _dataPoints[index].time;
-    timeText =  '${time.hour}:${time.minute}';
+ 
+ 
 
-    return SideTitleWidget(
-      axisSide: meta.axisSide,
-      space: 4,
-      child: Text(timeText),
-    );
-  }
+ 
 
-  FlTitlesData getTilesData(){
-    return FlTitlesData(
-        leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: true, interval: 1, reservedSize: 28)),
-        rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-        topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+ 
 
-        bottomTitles: AxisTitles(
-          sideTitles: SideTitles(
-            showTitles: true,
-            interval: 6,
-            getTitlesWidget: getTitles
-          ),
-        ),
-      );
-  }
-
-  FlBorderData getBorderData(){
-    return FlBorderData(
-        show: true,
-        border: Border.all(color: ThemeColors.primaryBackground, width: 1),
-      );
-  }
-
-  FlGridData getGridData(){
-    return FlGridData(show: false);
-  }
-
-  LineChartBarData getChartData(){
-    final chartGradient = LinearGradient(colors: [ThemeColors.primary.withOpacity(0.8), ThemeColors.secondary.withOpacity(0.8)]);
-    final belowBarDataGRadient = LinearGradient(colors: [ThemeColors.primary.withOpacity(0.2), ThemeColors.secondary.withOpacity(0.2)]);
-    return LineChartBarData(
-          spots: _dataPoints
-              .asMap()
-              .entries
-              .map((entry) => FlSpot(
-                    entry.key.toDouble(), // x-Achse: Index der Datenpunkte
-                    entry.value.energyConsumption, // y-Achse: Stromverbrauch
-                  ))
-              .toList(),
-          isCurved: true,
-          gradient: chartGradient, // Farbe der Linie
-          dotData: FlDotData(show: false),
-          belowBarData: BarAreaData(
-            show: true,
-            gradient: belowBarDataGRadient
-          ),
-        );
-  }
-
-  double getMaxY (){
-    return _dataPoints.map((point) => point.energyConsumption).reduce((a, b) => a > b ? a : b) + 1; // Maximaler Stromverbrauch + 1
-  }
 }
 
 
