@@ -3,26 +3,26 @@ import 'package:layblar_app/Themes/ThemeColors.dart';
 class Styles{
 
   static final primaryButtonStyle = ElevatedButton.styleFrom(
-    primary: ThemeColors.primary,
+    backgroundColor: ThemeColors.primary,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
     textStyle: TextStyle(color: ThemeColors.textColor),
 
   );
 
   static final secondaryButtonStyle = ElevatedButton.styleFrom(
-    primary: ThemeColors.secondary,
+    backgroundColor: ThemeColors.secondary,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
     textStyle: TextStyle(color: ThemeColors.textColor)
   );
 
   static final tertiaryButtonStyle = ElevatedButton.styleFrom(
-    primary: ThemeColors.tertiary,
+    backgroundColor: ThemeColors.tertiary,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
     textStyle: TextStyle(color: ThemeColors.textColor)
   );
 
   static final errorButtonStyle = ElevatedButton.styleFrom(
-    primary: ThemeColors.error,
+    backgroundColor: ThemeColors.error,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
     textStyle: TextStyle(color: ThemeColors.textColor)
   );

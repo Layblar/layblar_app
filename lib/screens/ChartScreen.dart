@@ -7,6 +7,8 @@ import 'package:layblar_app/Themes/Styles.dart';
 import 'package:layblar_app/Themes/ThemeColors.dart';
 import 'package:syncfusion_flutter_charts/charts.dart' hide LabelPlacement;
 import 'package:syncfusion_flutter_sliders/sliders.dart';
+import 'package:intl/intl.dart';
+
 
 import '../WIdgets/DeviceListItem.dart';
 
@@ -22,10 +24,9 @@ class _ChartScreenState extends State<ChartScreen> {
   final List<DataPoint> _dataPoints = generateDataPoints();
   final List<DeviceListItem> cardMocks = DeviceCardMockDTO.generateCards();
 
-   DateTime _dateMin = DateTime.now();
-   DateTime _dateMax = DateTime.now(); 
+  final belowBarDataGradient = LinearGradient(colors: [ThemeColors.primary.withOpacity(0.8), ThemeColors.secondary.withOpacity(0.8)]);
 
-   late SfRangeValues _dateValues;
+
 
   String startTime = "";
   String endTime = "";
@@ -45,26 +46,15 @@ class _ChartScreenState extends State<ChartScreen> {
   String selectedDevice = "";
   bool isDeviceSelected = false;
 
-  bool isChartSelectionEnabled = false;
+  bool isChartSelectionEnabled = true;
 
   List<DeviceListItem> mockedItems = DeviceCardMockDTO.generateCards();
   List<DropdownMenuItem<String>> dropdownItems = [];
 
 
-
-  
-
-
-
-
   @override
   void initState() {
   super.initState();
-
-  _dateMin = _dataPoints[0].time;
-  _dateMax = _dataPoints[_dataPoints.length -1].time;
-  _dateValues = SfRangeValues(_dateMin, _dateMax);
-
   selectedDevice = mockedItems[0].title;
   dropdownItems = mockedItems.map((element) {
     return DropdownMenuItem(
@@ -77,10 +67,14 @@ class _ChartScreenState extends State<ChartScreen> {
     }).toList();
   }
 
-  
-  
   @override
   Widget build(BuildContext context) {
+
+
+    DateTime _dateMin = _dataPoints[0].time;
+    DateTime _dateMax = _dataPoints[_dataPoints.length - 1].time;
+    SfRangeValues _dateValues = SfRangeValues(_dateMin, _dateMax);
+
     return  Column(
       children: [
         Expanded(
@@ -89,35 +83,7 @@ class _ChartScreenState extends State<ChartScreen> {
         ),
         Expanded(
           flex: 4, 
-          child: Container(
-            child: Center(
-              child: SfRangeSelector(
-                min: _dateMin,
-                max: _dateMax,
-                initialValues: _dateValues,
-                labelPlacement: LabelPlacement.betweenTicks,
-                interval: 1,
-                showTicks: true,
-                showLabels: true,
-                child: SizedBox(
-                  child: SfCartesianChart(
-                    margin: EdgeInsets.zero,
-                    primaryXAxis: DateTimeAxis(
-                      minimum: _dateMin,
-                      maximum: _dateMax,
-                      isVisible: false,
-                    ),
-                    primaryYAxis: NumericAxis(
-                      isVisible: true,
-                    ),
-                    series: [
-                      SplineSeries(dataSource: _dataPoints, xValueMapper: (DataPoint p, int index) => p.time, yValueMapper: (DataPoint p, int index)=> p.energyConsumption)
-                    ],
-                  ),
-                ),
-              )
-            )
-          )
+          child: getChartWithSliderSection(_dateMin, _dateMax, _dateValues),
         ),
         Expanded(
           flex:4,
@@ -128,6 +94,52 @@ class _ChartScreenState extends State<ChartScreen> {
         )
       ],
     );
+  }
+
+  Container getChartWithSliderSection(DateTime _dateMin, DateTime _dateMax, SfRangeValues _dateValues) {
+    return Container(
+          child: Stack(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: Center(
+                // ignore: missing_required_param
+                child: SfRangeSelector(
+                  min: _dateMin,
+                  max: _dateMax,
+                  initialValues: _dateValues,
+                  interval: 1,
+                  dateIntervalType: DateIntervalType.hours,
+                  dateFormat: DateFormat.H(),
+                  showTicks: false,
+                  showLabels: false,
+                  child: SizedBox(
+                    child: SfCartesianChart(
+                      margin: EdgeInsets.zero,
+                      primaryXAxis: DateTimeAxis(
+                        minimum: _dateMin,
+                        maximum: _dateMax,
+                        isVisible: true,
+                      ),
+                      primaryYAxis: NumericAxis(
+                        name: "kw/h",
+                        isVisible: true, 
+                        maximum: (getMaxEngeryConsumtion(_dataPoints) + 1) //for a little extra padding ;)
+                      ),
+                      series: <SplineAreaSeries<DataPoint, DateTime>>[
+                        SplineAreaSeries<DataPoint, DateTime>(
+                          gradient: belowBarDataGradient,
+                            dataSource: _dataPoints,
+                            xValueMapper: (DataPoint p, int index) => p.time,
+                            yValueMapper: (DataPoint p, int index) => p.energyConsumption)
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ));
   }
 
 
@@ -182,72 +194,7 @@ class _ChartScreenState extends State<ChartScreen> {
     return Center(child: Text("For this project, the chart selection was disabled", style: Styles.regularTextStyle,));
   }
 
-  Container getChartSection() {
-    return Container(
-          margin: const EdgeInsets.only(left: 8, top:8, right: 8, bottom:0),
-          decoration:Styles.containerDecoration,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: LineChart(
-              LineChartData(
-                
-                lineTouchData: LineTouchData(
-                   touchCallback: (FlTouchEvent event, LineTouchResponse? lineTouch) {
-
-                     if (lineTouch == null || lineTouch.lineBarSpots == null) {
-                      return;
-                    }
-                    String timeText;
-                    final value = lineTouch.lineBarSpots![0].x;
-                    DateTime time = _dataPoints[value.toInt()].time;
-                    timeText =  '${time.hour}:${time.minute}';
-                    if(isStartTimeEnabled){
-                      setState(() {
-                        startTime = timeText;
-                        selectedStartIndex = lineTouch.lineBarSpots![0].spotIndex;
-
-                        //showingSpots.add(LineBarSpot(_dataPoints[value.toInt()]));
-                        //selectedSpots.add(selectedStartIndex);
-                      });
-                    }
-                    if(isEndTimeEnabled){
-                      setState(() {
-                        endTime = timeText;
-                        selectedEndIndex = lineTouch.lineBarSpots![0].spotIndex;    
-                      });
-                    }
-                },
-                touchTooltipData: LineTouchTooltipData(
-                    tooltipBgColor: ThemeColors.primary,
-                    getTooltipItems: (List<LineBarSpot> touchedSpots) {
-                      final List<LineTooltipItem> tooltips = [];
-                      for (final LineBarSpot touchedSpot in touchedSpots) {
-                        final DateTime time = _dataPoints[touchedSpot.x.toInt()].time;
-                        final String timeText = '${time.hour}:${time.minute}';
-                        tooltips.add(LineTooltipItem(timeText, TextStyle(color: ThemeColors.textColor)));
-                      }
-                      return tooltips;
-                    },
-                  ),
-                  ),
-                gridData: getGridData(),
-                titlesData: getTilesData(),
-                borderData: getBorderData(),
-                minX: 0,
-                maxX: _dataPoints.length.toDouble() - 1, // Anzahl der Datenpunkte - 1
-                minY: 0,
-                //maxY: getMaxY(),
-                maxY: 11,
-                lineBarsData: [
-                  getChartData()
-                ],
-                showingTooltipIndicators: selectedSpots,
-
-              ),
-            ),
-          ),
-        );
-  }
+  
 
   Container getSetDeviceSection() {
     return Container(
@@ -459,77 +406,6 @@ class _ChartScreenState extends State<ChartScreen> {
         );
   }
 
-
-  
-
-
-
-  //chart setup/customization stuff
-  Widget getTitles (double value, TitleMeta meta){
-    String timeText;
-    int index = value.toInt();
-    DateTime time = _dataPoints[index].time;
-    timeText =  '${time.hour}:${time.minute}';
-
-    return SideTitleWidget(
-      axisSide: meta.axisSide,
-      space: 4,
-      child: Text(timeText),
-    );
-  }
-
-  FlTitlesData getTilesData(){
-    return FlTitlesData(
-        leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: true, interval: 1, reservedSize: 28)),
-        rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-        topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-
-        bottomTitles: AxisTitles(
-          sideTitles: SideTitles(
-            showTitles: true,
-            interval: 6,
-            getTitlesWidget: getTitles
-          ),
-        ),
-      );
-  }
-
-  FlBorderData getBorderData(){
-    return FlBorderData(
-        show: true,
-        border: Border.all(color: ThemeColors.primaryBackground, width: 1),
-      );
-  }
-
-  FlGridData getGridData(){
-    return FlGridData(show: false);
-  }
-
-  LineChartBarData getChartData(){
-    final chartGradient = LinearGradient(colors: [ThemeColors.primary.withOpacity(0.8), ThemeColors.secondary.withOpacity(0.8)]);
-    final belowBarDataGRadient = LinearGradient(colors: [ThemeColors.primary.withOpacity(0.2), ThemeColors.secondary.withOpacity(0.2)]);
-    return LineChartBarData(
-          spots: _dataPoints
-              .asMap()
-              .entries
-              .map((entry) => FlSpot(
-                    entry.key.toDouble(), // x-Achse: Index der Datenpunkte
-                    entry.value.energyConsumption, // y-Achse: Stromverbrauch
-                  ))
-              .toList(),
-          isCurved: true,
-          gradient: chartGradient, // Farbe der Linie
-          dotData: FlDotData(show: false),
-          belowBarData: BarAreaData(
-            show: true,
-            gradient: belowBarDataGRadient
-          ),
-        );
-  }
-
-  double getMaxY (){
-    return _dataPoints.map((point) => point.energyConsumption).reduce((a, b) => a > b ? a : b) + 1; // Maximaler Stromverbrauch + 1
-  }
 }
 
 

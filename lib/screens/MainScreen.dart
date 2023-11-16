@@ -1,3 +1,4 @@
+// ignore: file_names
 import 'package:flutter/material.dart';
 import 'package:layblar_app/Themes/Styles.dart';
 import 'package:layblar_app/screens/ChartScreen.dart';
@@ -29,10 +30,10 @@ class _MainScreenState extends State<MainScreen> {
 
   void _loadScreen(){
     switch (_currentIndex){
-      case (0): return setState(() => _currentWidget = TimerScreen());
-      case (1): return setState(() => _currentWidget = DetailsScreen());
-      case (2): return setState(() => _currentWidget = LabelsScreen());
-      case (3): return setState(() => _currentWidget = ChartScreen());
+      case (0): return setState(() => _currentWidget = const TimerScreen());
+      case (1): return setState(() => _currentWidget = const DetailsScreen());
+      case (2): return setState(() => _currentWidget = const LabelsScreen());
+      case (3): return setState(() => _currentWidget = const ChartScreen());
     }
   }
 
@@ -43,10 +44,8 @@ class _MainScreenState extends State<MainScreen> {
   //TODO: Open settings
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        return false;
-      },
+    return PopScope(
+     canPop: false,
       child: Scaffold(
         backgroundColor: ThemeColors.primaryBackground,
         appBar: AppBar(
