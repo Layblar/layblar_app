@@ -106,95 +106,6 @@ class _ChartScreenState extends State<ChartScreen> {
     );
   }
 
-  Container getChartWithSliderSection(DateTime _dateMin, DateTime _dateMax, SfRangeValues _dateValues) {
-    return Container(
-          child: Stack(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: Center(
-                // ignore: missing_required_param
-                child: SfRangeSelector(
-                  min: _dateMin,
-                  max: _dateMax,
-                  initialValues: _dateValues,
-                  interval: 1,
-                  dateIntervalType: DateIntervalType.hours,
-                  dateFormat: DateFormat.H(),
-                  showTicks: false,
-                  showLabels: false,
-                  child: SizedBox(
-                    child: SfCartesianChart(
-                      margin: EdgeInsets.zero,
-                      primaryXAxis: DateTimeAxis(
-                        minimum: _dateMin,
-                        maximum: _dateMax,
-                        isVisible: true,
-                      ),
-                      primaryYAxis: NumericAxis(
-                        name: "kw/h",
-                        isVisible: true, 
-                        maximum: (getMaxEngeryConsumtion(_dataPoints) + 1) //for a little extra padding ;)
-                      ),
-                      series: <SplineAreaSeries<DataPoint, DateTime>>[
-                        SplineAreaSeries<DataPoint, DateTime>(
-                          gradient: belowBarDataGradient,
-                            dataSource: _dataPoints,
-                            xValueMapper: (DataPoint p, int index) => p.time,
-                            yValueMapper: (DataPoint p, int index) => p.energyConsumption)
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ));
-  }
-
-
-  void enableStartTime(){
-    isEndTimeEnabled = false;
-    isStartTimeEnabled = true;
-  }
-
-  void enableEndTime(){
-    isStartTimeEnabled = false;
-    isEndTimeEnabled = true;
-  }
-
-  void onSubmit (){
-    setState(() {
-      isEndTimeEnabled = false;
-      isStartTimeEnabled = false;
-      startTime = "";
-      endTime = "";
-      selectedStartIndex = null;
-      selectedEndIndex = null;
-    });
-  }
-
-  void onReset (){
-    setState(() {
-      isEndTimeEnabled = false;
-      isStartTimeEnabled = false;
-      startTime = "";
-      endTime = "";
-      selectedStartIndex = null;
-      selectedEndIndex = null;
-    });
-  }
-
-  
-
-
-
-  Widget getDisabledChartView(){
-    return Center(child: Text("For this project, the chart selection was disabled", style: Styles.regularTextStyle,));
-  }
-
-  
-
   Container getSetDeviceSection() {
     return Container(
               margin: const EdgeInsets.only(left: 8, right: 8, top: 16, bottom: 0),
@@ -223,28 +134,7 @@ class _ChartScreenState extends State<ChartScreen> {
               );
   }
 
-  
-
-  Container getResetSubmitBtnSection() {
-    return Container(
-                margin: const EdgeInsets.only(left: 8, right: 8),
-                decoration: Styles.containerDecoration,
-                child: Row(
-                  children: [
-                    Expanded(child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton(onPressed: ()=> onReset(), child:  Text("Reset", style: Styles.secondaryTextStyle,), style: Styles.errorButtonStyle,),
-                    )),
-                    Expanded(child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton(onPressed: ()=> onSubmit(), child:  Text("Save Lable" , style: Styles.secondaryTextStyle), style: Styles.primaryButtonStyle,),
-                    )),
-                  ],
-                ),
-              );
-  }
-
-  void showDropDownList(){
+   void showDropDownList(){
     showDialog(context: context, builder: (BuildContext context){
       return AlertDialog(
         backgroundColor: ThemeColors.secondaryBackground,
@@ -267,55 +157,7 @@ class _ChartScreenState extends State<ChartScreen> {
     });
   }
 
- 
-
-  Container getTimeSection() {
-    return Container(
-                margin: const EdgeInsets.symmetric(horizontal: 8),
-                padding: const EdgeInsets.all(8),
-                decoration: Styles.containerDecoration,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    mainAxisSize: MainAxisSize.max,
-                  children: [
-                   Expanded(
-                     flex: 1, 
-                     child: Padding(
-                       padding: const EdgeInsets.all(8.0),
-                       child: Row(
-                            children: [
-                              Expanded(flex: 1, child:  Text("End Time:")),
-                              Expanded(
-                                flex: 1,
-                                child: Container(
-                                  decoration:Styles.primaryBackgroundContainerDecoration,
-                                  child: Center(
-                                    child: Text(endTime)))),
-                            ],
-                          ),
-                     ),
-                   ),
-                    Expanded(
-                      flex: 1,
-                      child: Row(
-                        children: [
-                           Expanded(flex: 1, child:  Text("Start Time:")),
-                          Expanded(
-                            flex: 1,
-                            child: Container(
-                              decoration:Styles.primaryBackgroundContainerDecoration,
-                              child: Center(
-                                child: Text(startTime)))),
-                        ],
-                      ),
-                    )
-                    
-                  ],
-                )
-              );
-  }
-
-  Container getTimeFilterSection() {
+   Container getTimeFilterSection() {
 
     void toggleTimeFilter(String time){
 
@@ -380,6 +222,165 @@ class _ChartScreenState extends State<ChartScreen> {
           ),
         );
   }
+
+
+  Container getChartWithSliderSection(DateTime _dateMin, DateTime _dateMax, SfRangeValues _dateValues) {
+    return Container(
+          child: Stack(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: Center(
+                // ignore: missing_required_param
+                child: SfRangeSelector(
+                  min: _dateMin,
+                  max: _dateMax,
+                  initialValues: _dateValues,
+                  interval: 1,
+                  dateIntervalType: DateIntervalType.hours,
+                  dateFormat: DateFormat.H(),
+                  showTicks: false,
+                  showLabels: false,
+                  child: SizedBox(
+                    child: SfCartesianChart(
+                      margin: EdgeInsets.zero,
+                      primaryXAxis: DateTimeAxis(
+                        minimum: _dateMin,
+                        maximum: _dateMax,
+                        isVisible: true,
+                      ),
+                      primaryYAxis: NumericAxis(
+                        name: "kw/h",
+                        isVisible: true, 
+                        maximum: (getMaxEngeryConsumtion(_dataPoints) + 1) //for a little extra padding ;)
+                      ),
+                      series: <SplineAreaSeries<DataPoint, DateTime>>[
+                        SplineAreaSeries<DataPoint, DateTime>(
+                          gradient: belowBarDataGradient,
+                            dataSource: _dataPoints,
+                            xValueMapper: (DataPoint p, int index) => p.time,
+                            yValueMapper: (DataPoint p, int index) => p.energyConsumption)
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ));
+  }
+
+   Container getTimeSection() {
+    return Container(
+                margin: const EdgeInsets.symmetric(horizontal: 8),
+                padding: const EdgeInsets.all(8),
+                decoration: Styles.containerDecoration,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisSize: MainAxisSize.max,
+                  children: [
+                   Expanded(
+                     flex: 1, 
+                     child: Padding(
+                       padding: const EdgeInsets.all(8.0),
+                       child: Row(
+                            children: [
+                              Expanded(flex: 1, child:  Text("End Time:")),
+                              Expanded(
+                                flex: 1,
+                                child: Container(
+                                  decoration:Styles.primaryBackgroundContainerDecoration,
+                                  child: Center(
+                                    child: Text(endTime)))),
+                            ],
+                          ),
+                     ),
+                   ),
+                    Expanded(
+                      flex: 1,
+                      child: Row(
+                        children: [
+                           Expanded(flex: 1, child:  Text("Start Time:")),
+                          Expanded(
+                            flex: 1,
+                            child: Container(
+                              decoration:Styles.primaryBackgroundContainerDecoration,
+                              child: Center(
+                                child: Text(startTime)))),
+                        ],
+                      ),
+                    )
+                    
+                  ],
+                )
+              );
+  }
+
+  Container getResetSubmitBtnSection() {
+    return Container(
+                margin: const EdgeInsets.only(left: 8, right: 8),
+                decoration: Styles.containerDecoration,
+                child: Row(
+                  children: [
+                    Expanded(child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(onPressed: ()=> onReset(), child:  Text("Reset", style: Styles.secondaryTextStyle,), style: Styles.errorButtonStyle,),
+                    )),
+                    Expanded(child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(onPressed: ()=> onSubmit(), child:  Text("Save Label" , style: Styles.secondaryTextStyle), style: Styles.primaryButtonStyle,),
+                    )),
+                  ],
+                ),
+              );
+  }
+
+
+  void enableStartTime(){
+    isEndTimeEnabled = false;
+    isStartTimeEnabled = true;
+  }
+
+  void enableEndTime(){
+    isStartTimeEnabled = false;
+    isEndTimeEnabled = true;
+  }
+
+  void onSubmit (){
+    setState(() {
+      isEndTimeEnabled = false;
+      isStartTimeEnabled = false;
+      startTime = "";
+      endTime = "";
+      selectedStartIndex = null;
+      selectedEndIndex = null;
+    });
+  }
+
+  void onReset (){
+    setState(() {
+      isEndTimeEnabled = false;
+      isStartTimeEnabled = false;
+      startTime = "";
+      endTime = "";
+      selectedStartIndex = null;
+      selectedEndIndex = null;
+    });
+  }
+
+  
+  
+
+  
+
+  
+
+ 
+ 
+
+ 
+
+ 
 
 }
 

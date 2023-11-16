@@ -24,16 +24,16 @@ class _MainScreenState extends State<MainScreen> {
    
   var _currentIndex = 0;
 
-  var _currentHouseHold = "Haushalt 1";
+  var _currentScreenTitle = "Timer Labeling";
 
 
 
   void _loadScreen(){
     switch (_currentIndex){
-      case (0): return setState(() => _currentWidget = const TimerScreen());
-      case (1): return setState(() => _currentWidget = const DetailsScreen());
-      case (2): return setState(() => _currentWidget = const LabelsScreen());
-      case (3): return setState(() => _currentWidget = const ChartScreen());
+      case (0): return setState((){_currentWidget = const TimerScreen(); _currentScreenTitle = "Timer Labeling";});
+      case (1): return setState(() { _currentWidget = const DetailsScreen(); _currentScreenTitle = "Details";});
+      case (2): return setState(() { _currentWidget = const LabelsScreen(); _currentScreenTitle = "My Labels";});
+    case (3): return setState(() { _currentWidget = const ChartScreen(); _currentScreenTitle = "Chart Labeling";});
     }
   }
 
@@ -50,10 +50,10 @@ class _MainScreenState extends State<MainScreen> {
         backgroundColor: ThemeColors.primaryBackground,
         appBar: AppBar(
           centerTitle: true,
-          title:  Text(_currentHouseHold, textAlign: TextAlign.center, style: Styles.regularTextStyle,),
+          title:  Text(_currentScreenTitle, textAlign: TextAlign.center, style: Styles.regularTextStyle,),
           backgroundColor: ThemeColors.secondaryBackground,
           actions: [
-            IconButton(icon: Icon(Icons.settings, color: ThemeColors.textColor,), onPressed: () => _openSettings(),)
+            IconButton(icon: Icon(Icons.person, color: ThemeColors.textColor,), onPressed: () => _openSettings(),)
           ],
           automaticallyImplyLeading: false,
           ),
