@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:layblar_app/DTO/DEviceCardMocksDTO.dart';
 import 'package:layblar_app/Themes/Styles.dart';

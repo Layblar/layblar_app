@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +5,8 @@ import 'package:layblar_app/DTO/DEviceCardMocksDTO.dart';
 import 'package:layblar_app/DTO/DataPointMockDTO.dart';
 import 'package:layblar_app/Themes/Styles.dart';
 import 'package:layblar_app/Themes/ThemeColors.dart';
+import 'package:syncfusion_flutter_charts/charts.dart' hide LabelPlacement;
+import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 import '../WIdgets/DeviceListItem.dart';
 
@@ -20,6 +21,11 @@ class _ChartScreenState extends State<ChartScreen> {
 
   final List<DataPoint> _dataPoints = generateDataPoints();
   final List<DeviceListItem> cardMocks = DeviceCardMockDTO.generateCards();
+
+   DateTime _dateMin = DateTime.now();
+   DateTime _dateMax = DateTime.now(); 
+
+   late SfRangeValues _dateValues;
 
   String startTime = "";
   String endTime = "";
@@ -43,6 +49,9 @@ class _ChartScreenState extends State<ChartScreen> {
 
   List<DeviceListItem> mockedItems = DeviceCardMockDTO.generateCards();
   List<DropdownMenuItem<String>> dropdownItems = [];
+
+
+
   
 
 
@@ -51,6 +60,11 @@ class _ChartScreenState extends State<ChartScreen> {
   @override
   void initState() {
   super.initState();
+
+  _dateMin = _dataPoints[0].time;
+  _dateMax = _dataPoints[_dataPoints.length -1].time;
+  _dateValues = SfRangeValues(_dateMin, _dateMax);
+
   selectedDevice = mockedItems[0].title;
   dropdownItems = mockedItems.map((element) {
     return DropdownMenuItem(
@@ -75,7 +89,35 @@ class _ChartScreenState extends State<ChartScreen> {
         ),
         Expanded(
           flex: 4, 
-          child: getChartSection()
+          child: Container(
+            child: Center(
+              child: SfRangeSelector(
+                min: _dateMin,
+                max: _dateMax,
+                initialValues: _dateValues,
+                labelPlacement: LabelPlacement.betweenTicks,
+                interval: 1,
+                showTicks: true,
+                showLabels: true,
+                child: SizedBox(
+                  child: SfCartesianChart(
+                    margin: EdgeInsets.zero,
+                    primaryXAxis: DateTimeAxis(
+                      minimum: _dateMin,
+                      maximum: _dateMax,
+                      isVisible: false,
+                    ),
+                    primaryYAxis: NumericAxis(
+                      isVisible: true,
+                    ),
+                    series: [
+                      SplineSeries(dataSource: _dataPoints, xValueMapper: (DataPoint p, int index) => p.time, yValueMapper: (DataPoint p, int index)=> p.energyConsumption)
+                    ],
+                  ),
+                ),
+              )
+            )
+          )
         ),
         Expanded(
           flex:4,
@@ -300,7 +342,7 @@ class _ChartScreenState extends State<ChartScreen> {
                       flex: 4,
                       child: Row(
                         children: [
-                          const Expanded(flex: 1, child:  Text("End Time:")),
+                          Expanded(flex: 1, child:  Text("End Time:")),
                           Expanded(
                             flex: 1,
                             child: Container(
@@ -338,7 +380,7 @@ class _ChartScreenState extends State<ChartScreen> {
                       flex: 4,
                       child: Row(
                         children: [
-                          const Expanded(flex: 1, child:  Text("Start Time:")),
+                           Expanded(flex: 1, child:  Text("Start Time:")),
                           Expanded(
                             flex: 1,
                             child: Container(

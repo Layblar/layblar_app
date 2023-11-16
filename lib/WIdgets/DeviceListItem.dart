@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../Themes/Styles.dart';
-import '../Themes/ThemeColors.dart';
 class DeviceListItem extends StatefulWidget {
   const DeviceListItem({
     Key? key,

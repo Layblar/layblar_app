@@ -51,7 +51,7 @@ class Styles{
         color: ThemeColors.primary.withOpacity(0.4),
         spreadRadius: 5,
         blurRadius: 7,
-        offset: const Offset(0, 3)
+        offset:  Offset(0, 3)
         )
     ]
   );
@@ -64,7 +64,7 @@ class Styles{
         color: ThemeColors.error.withOpacity(0.4),
         spreadRadius: 5,
         blurRadius: 7,
-        offset: const Offset(0, 3)
+        offset:  Offset(0, 3)
         )
     ]
   );

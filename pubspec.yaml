@@ -36,6 +36,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   fl_chart: ^0.55.2
   avatar_glow: ^2.0.2
+  syncfusion_flutter_sliders: 23.1.44
+  syncfusion_flutter_charts: ^23.1.44
 
 dev_dependencies:
   flutter_test:
