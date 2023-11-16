@@ -27,7 +27,7 @@ class _ChartScreenState extends State<ChartScreen> {
   final belowBarDataGradient = LinearGradient(colors: [ThemeColors.primary.withOpacity(0.8), ThemeColors.secondary.withOpacity(0.8)]);
 
 
-
+ 
   String startTime = "";
   String endTime = "";
 
@@ -71,7 +71,10 @@ class _ChartScreenState extends State<ChartScreen> {
   Widget build(BuildContext context) {
 
 
+
     DateTime _dateMin = _dataPoints[0].time;
+
+
     DateTime _dateMax = _dataPoints[_dataPoints.length - 1].time;
     SfRangeValues _dateValues = SfRangeValues(_dateMin, _dateMax);
 
@@ -241,6 +244,12 @@ class _ChartScreenState extends State<ChartScreen> {
                   dateFormat: DateFormat.H(),
                   showTicks: false,
                   showLabels: false,
+                  onChanged: (SfRangeValues values){
+                    setState(() { 
+                      startTime = DateFormat('HH:mm').format(values.start);
+                      endTime =  DateFormat('HH:mm').format(values.end);
+                    });
+                  },
                   child: SizedBox(
                     child: SfCartesianChart(
                       margin: EdgeInsets.zero,
@@ -279,16 +288,33 @@ class _ChartScreenState extends State<ChartScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     mainAxisSize: MainAxisSize.max,
                   children: [
+
+                     Expanded(
+                      flex: 1,
+                      child: Row(
+                        children: [
+                           const Expanded(flex: 3, child:  Text("Start:")),
+                          Expanded(
+                            flex: 7,
+                            child: Container(
+                              padding: const EdgeInsets.only(left: 10),
+                              decoration:Styles.primaryBackgroundContainerDecoration,
+                              child: Center(
+                                child: Text(startTime)))),
+                        ],
+                      ),
+                    ),
                    Expanded(
                      flex: 1, 
                      child: Padding(
                        padding: const EdgeInsets.all(8.0),
                        child: Row(
                             children: [
-                              Expanded(flex: 1, child:  Text("End Time:")),
+                              const Expanded(flex: 3, child:  Text("End:")),
                               Expanded(
-                                flex: 1,
+                                flex: 7,
                                 child: Container(
+                                  padding: const EdgeInsets.only(left: 10),
                                   decoration:Styles.primaryBackgroundContainerDecoration,
                                   child: Center(
                                     child: Text(endTime)))),
@@ -296,20 +322,7 @@ class _ChartScreenState extends State<ChartScreen> {
                           ),
                      ),
                    ),
-                    Expanded(
-                      flex: 1,
-                      child: Row(
-                        children: [
-                           Expanded(flex: 1, child:  Text("Start Time:")),
-                          Expanded(
-                            flex: 1,
-                            child: Container(
-                              decoration:Styles.primaryBackgroundContainerDecoration,
-                              child: Center(
-                                child: Text(startTime)))),
-                        ],
-                      ),
-                    )
+                   
                     
                   ],
                 )
@@ -365,6 +378,7 @@ class _ChartScreenState extends State<ChartScreen> {
       endTime = "";
       selectedStartIndex = null;
       selectedEndIndex = null;
+      selectedDevice = "";
     });
   }
 
