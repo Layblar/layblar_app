@@ -7,6 +7,7 @@ import 'package:layblar_app/WIdgets/DeviceListItem.dart';
 import 'package:layblar_app/WIdgets/StopwatchItem.dart';
 
 
+
 class TimerScreen extends StatefulWidget {
 
 
@@ -66,9 +67,13 @@ class _TimerScreenState extends State<TimerScreen> {
                       margin: const EdgeInsets.all(8),
                         key: UniqueKey(), // Hier wird ein UniqueKey verwendet
 
-                      child: ListView(
-                        children: stopwatchItems,
-                      ),
+                      child: ListView.builder(
+                reverse: false, // Umkehrung der Liste
+                itemCount: stopwatchItems.length,
+                itemBuilder: (context, index) {
+                  return stopwatchItems[index];
+                },
+              ),
                   ),
                 )
             
@@ -155,6 +160,7 @@ class _TimerScreenState extends State<TimerScreen> {
       Stopwatch stopwatch = Stopwatch();
       setState(() {
         items.add(StopWatchItem(selectedDevice: selectedDevice, stopwatch: stopwatch,));
+        
       });
     }
   }
