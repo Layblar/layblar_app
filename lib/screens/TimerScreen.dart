@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:layblar_app/DTO/DEviceCardMocksDTO.dart';
 import 'package:layblar_app/Themes/Styles.dart';
 import 'package:layblar_app/Themes/ThemeColors.dart';
+import 'package:layblar_app/WIdgets/BlinkingDot.dart';
 import 'package:layblar_app/WIdgets/DeviceListItem.dart';
 
 
@@ -19,15 +20,17 @@ class TimerScreen extends StatefulWidget {
 
 class _TimerScreenState extends State<TimerScreen> {
 
-  final Stopwatch _stopwatch = Stopwatch();
-  late Timer _timer;
-  bool _isRunning = false;
-  String _result = '00:00:00';
+  // final Stopwatch _stopwatch = Stopwatch();
+  // late Timer _timer;
+  // bool _isRunning = false;
+  // String _result = '00:00:00';
   String selectedDevice = "";
 
   List<DeviceListItem> mockedItems = DeviceCardMockDTO.generateCards();
   //get our households
   List<DropdownMenuItem<String>> dropdownItems = [];
+
+  List<StopWatchItem> stopwatchItems = [];
 
   @override
   void initState() {
@@ -50,140 +53,113 @@ class _TimerScreenState extends State<TimerScreen> {
   Widget build(BuildContext context) {
 
     return  SizedBox(
-        child: Column(
+        child: Stack(
           children: [
-            //const InfoBox(),
+           
+            Column(
+              children: [
+                //const InfoBox(),
+                
+                Expanded(flex: 1, child: getToggleWatchModeSection()),
+                Expanded(flex: 2, child: getSetDeviceSection()), 
+                //Expanded(flex: 6, child: getStopwatchSection(context)),
+                Expanded(
+                  flex: 6,
+                  child: Container(
+                      margin: EdgeInsets.all(8),
+                        key: UniqueKey(), // Hier wird ein UniqueKey verwendet
+
+                      child: ListView(
+                        children: stopwatchItems,
+                      ),
+                  ),
+                )
             
-            Expanded(flex: 2, child: getHouseHoldSelection()), 
-            Expanded(flex: 7, child: getStopwatchSection(context)),
-            Expanded(flex: 1,child: getSubmitBtnSection(context))   
-        
+              ],
+            ),
+             Align(
+              alignment: Alignment.bottomRight,
+              child: getSubmitBtnSection(context),  
+            ),
           ],
         ),
       );
   }
 
 
-  void _start(){
 
-    _isRunning = true;
-    _timer = Timer.periodic(const Duration(milliseconds: 30), (Timer t) {
-      setState(() {
-        _result = 
-          '${_stopwatch.elapsed.inMinutes.toString().padLeft(2, '0')}:${(_stopwatch.elapsed.inSeconds % 60).toString().padLeft(2, '0')}:${(_stopwatch.elapsed.inMilliseconds % 100).toString().padLeft(2, '0')}';
-      });
-    });
-    _stopwatch.start();
-  }
-
-   void _stop() {
-
-    
-    _timer.cancel();
-    _stopwatch.stop();
-    setState(() {
-      _isRunning = false;
-    });
-  }
-
-  void _reset(){
-    _stop();
-    _stopwatch.reset();
-    _isRunning = false;
-    setState(() {
-      _result = '00:00:00';
-    });
-  }
-
-  void _submit(String household, String time){
-    debugPrint("submitted: " + household + ", " + time);
-  }
-
-  Container getSubmitBtnSection(BuildContext context) {
+  Container getToggleWatchModeSection() {
     return Container(
-            width: MediaQuery.of(context).size.width,
-            margin: const EdgeInsets.all(8),
-            decoration: Styles.containerDecoration,
-            child: Padding(
-              padding: const EdgeInsets.symmetric( vertical: 8.0, horizontal: 32.0),
-              child: ElevatedButton(
-                onPressed: ()=>  _submit(selectedDevice, _result),
-                style: Styles.primaryButtonStyle,
-                child: const Text("Sumbit"),  
+        margin: const EdgeInsets.only(left: 8, right: 8, top: 16, bottom: 8),
+        decoration: Styles.containerDecoration,
+        child: Row(
+          children: [
+            Expanded(flex:1, 
+            child: GestureDetector(
+              onTap: (){},
+              child: Container(
+                decoration: Styles.selctedContainerDecoration,
+                child:  Center(
+                  child: Text("Stopwatch  (" + stopwatchItems.length.toString() + ")" , style: TextStyle(color:  ThemeColors.secondaryBackground)),)),
+            ),),
+            Expanded(
+              flex:1,
+              child: GestureDetector(
+                onTap: (){},
+                child: Container(
+                  decoration: null,
+                child:  Center(
+                  child: Text("Timer (3)", style: TextStyle(color:ThemeColors.textColor),),)),
               ),
             ),
-          );
+           
+
+          ],
+        ),
+      );
   }
 
-  Container getStopwatchSection(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(8),
-      width: MediaQuery.of(context).size.width,
-      decoration: Styles.containerDecoration,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: 
-              Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        flex: 2,
-                        child: Container(
-                          child: BlinkingDotWidget(isRunning: _isRunning),
-                        ),
-                      ),
 
-                      Expanded(
-                        flex: 6,
-                        child: Container(
-                          decoration: Styles.primaryBackgroundContainerDecoration,
-                          child: Center(
-                            child: Text(
-                              _result,
-                              style: const TextStyle(
-                                fontSize: 50.0,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(flex: 2, child: Container())
-                    ],
-                  ),
-                  GestureDetector(
-                    onTap: !_isRunning ? _start : _stop,
-                    child: Container(
-                      height: 200,
-                      width: 200,
-                      decoration: !_isRunning
-                          ? Styles.stopwatchContainerDecoration
-                          : Styles.stopwatchContainerDecorationStopped,
-                      child: Center(
-                        child: !_isRunning
-                            ? Text("Start", style: Styles.headerTextStyleSecondary)
-                            : Text("Stop", style: Styles.headerTextStyleSecondary),
-                      ),
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: _reset,
-                    style: Styles.secondaryButtonStyle,
-                    child: const Text('Reset'),
-                  ),
-                ],
-              ),
-            ),
-          
-        
-      
+ 
+
+  Widget getSubmitBtnSection(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric( vertical: 16.0, horizontal: 16.0),
+          child: ElevatedButton(
+                  onPressed: () => addNewStopWatchItem(stopwatchItems, selectedDevice),
+                  style: Styles.primaryButtonRoundedStyle,
+                  child:  Text("+", style: Styles.headerTextStyle,),  
+                ),
+        ),
+      ],
     );
   }
 
+  void addNewStopWatchItem(List<StopWatchItem> items, String selectedDevice){
 
-  Container getHouseHoldSelection() {
+    debugPrint("[-----DEVICE----]"  + selectedDevice);
+    if(selectedDevice == ""){
+      showDialog(context: context, builder: (BuildContext context){
+        return AlertDialog(
+          backgroundColor: ThemeColors.secondaryBackground,
+          title: Text("Choose a Device first!", style: Styles.infoBoxTextStyle,),
+          actions: [
+            ElevatedButton( style: Styles.primaryButtonStyle, onPressed: ()=> Navigator.of(context).pop(), child: Text("Got it!", style: Styles.regularTextStyle,))
+          ],
+        );
+      });
+    }else{
+      setState(() {
+        items.add(StopWatchItem(selectedDevice: selectedDevice));
+      });
+    }
+  }
+
+
+  Container getSetDeviceSection() {
     return Container(
             margin: EdgeInsets.all(8),
             decoration: Styles.containerDecoration,
@@ -223,79 +199,105 @@ class _TimerScreenState extends State<TimerScreen> {
   }
 }
 
-class InfoBox extends StatelessWidget {
-  const InfoBox({
+
+
+class StopWatchItem extends StatefulWidget {
+  const StopWatchItem({
+    required this.selectedDevice,
     Key? key,
   }) : super(key: key);
+
+  final String selectedDevice;
+
+
+  @override
+  State<StopWatchItem> createState() => _StopWatchItemState();
+}
+
+class _StopWatchItemState extends State<StopWatchItem> {
+
+  final Stopwatch _stopwatch = Stopwatch();
+  late Timer _timer;
+  bool _isRunning = false;
+  String _result = '00:00:00';
+  String selectedDevice = "";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _start();
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(8),
-      decoration: Styles.containerDecoration,
-      child:  Padding(
-        padding:  EdgeInsets.all(16.0),
-           child: Text (
-            "Select your household and start the stopwatch at the same time as your device. when the device is finished, stop the watch and submit the data with the submit button.",
-             style: Styles.infoBoxTextStyle, 
-             overflow: TextOverflow.clip,
-            )
-      ),
-       
-    );
+    margin: const EdgeInsets.symmetric(vertical: 8),
+    decoration: Styles.containerDecoration,
+    child: Column(
+      children: [
+        Text(widget.selectedDevice),
+        Row(
+          children: [
+            BlinkingDotWidget(isRunning: _isRunning),
+            Text(_result),
+            ElevatedButton(onPressed: _stop, child: Text("Stop")),
+            ElevatedButton(onPressed: _reset, child: Text("Reset")),
+          ],
+        ),
+      ],
+    ),
+                            );
+  }
+
+
+  void _start() {
+  if (mounted) {
+    _isRunning = true;
+    _timer = Timer.periodic(const Duration(milliseconds: 30), (Timer t) {
+      if (mounted) {
+        setState(() {
+          _result = '${_stopwatch.elapsed.inMinutes.toString().padLeft(2, '0')}:${(_stopwatch.elapsed.inSeconds % 60).toString().padLeft(2, '0')}:${(_stopwatch.elapsed.inMilliseconds % 100).toString().padLeft(2, '0')}';
+        });
+      } else {
+        t.cancel();
+      }
+    });
+    _stopwatch.start();
   }
 }
 
+   void _stop() {
 
-
-class BlinkingDotWidget extends StatefulWidget {
-  final bool isRunning;
-
-  BlinkingDotWidget({required this.isRunning});
-
-  @override
-  _BlinkingDotWidgetState createState() => _BlinkingDotWidgetState();
-}
-
-class _BlinkingDotWidgetState extends State<BlinkingDotWidget> {
-  late Timer _blinkTimer;
-  bool _isVisible = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _blinkTimer = Timer.periodic(const Duration(milliseconds: 500), (timer) {
-      if (widget.isRunning) {
-        setState(() {
-          _isVisible = !_isVisible;
-        });
-      }
+    
+    _timer.cancel();
+    _stopwatch.stop();
+    setState(() {
+      _isRunning = false;
     });
   }
 
-  @override
-  void dispose() {
-    _blinkTimer.cancel();
-    super.dispose();
+  void _reset(){
+    _stop();
+    _stopwatch.reset();
+    _isRunning = false;
+    setState(() {
+      _result = '00:00:00';
+    });
+  }
+
+  void _submit(String household, String time){
+    debugPrint("submitted: " + household + ", " + time);
   }
 
   @override
-  Widget build(BuildContext context) {
-    if (widget.isRunning && _isVisible) {
-      return Container(
-        width: 20,
-        height: 20,
-        decoration: BoxDecoration(
-          color: ThemeColors.error,
-          shape: BoxShape.circle,
-        ),
-      );
-    } else {
-      return const SizedBox(
-        width: 20,
-        height: 20,
-      );
-    }
-  }
+void dispose() {
+  _timer.cancel();
+  super.dispose();
 }
+}
+
+
+
 

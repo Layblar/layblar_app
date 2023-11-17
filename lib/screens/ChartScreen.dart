@@ -163,8 +163,6 @@ class _ChartScreenState extends State<ChartScreen> {
    Container getTimeFilterSection() {
 
     void toggleTimeFilter(String time){
-
-      debugPrint("[------HALLLOOOOO]");
     if(time == "day"){
       setState(() {
         isTodaySelected =true;
@@ -226,6 +224,7 @@ class _ChartScreenState extends State<ChartScreen> {
         );
   }
 
+  
 
   Container getChartWithSliderSection(DateTime _dateMin, DateTime _dateMax, SfRangeValues _dateValues) {
     return Container(

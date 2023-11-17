@@ -9,6 +9,14 @@ class Styles{
 
   );
 
+  static final primaryButtonRoundedStyle = ElevatedButton.styleFrom(
+    backgroundColor: ThemeColors.primary,
+    shape: const CircleBorder(),
+    padding: const EdgeInsets.all(8),
+    textStyle: TextStyle(color: ThemeColors.textColor),
+
+  );
+
   static final secondaryButtonStyle = ElevatedButton.styleFrom(
     backgroundColor: ThemeColors.secondary,
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
