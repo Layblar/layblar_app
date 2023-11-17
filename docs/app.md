@@ -57,6 +57,11 @@ All notable changes to this project will be documented in this file.
 - added a slider for the dynamic chart time selection
 
 
+## 2023-11-17 - ([Richard Lorenz](https://github.com/fluttervieh))
+
+### Updated
+-  Timer view: added feature of having multiple Stopwatches running simultaneously.
+
 
 
 
