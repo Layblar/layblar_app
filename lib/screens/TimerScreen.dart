@@ -1,11 +1,10 @@
-import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:layblar_app/DTO/DEviceCardMocksDTO.dart';
 import 'package:layblar_app/Themes/Styles.dart';
 import 'package:layblar_app/Themes/ThemeColors.dart';
-import 'package:layblar_app/WIdgets/BlinkingDot.dart';
 import 'package:layblar_app/WIdgets/DeviceListItem.dart';
+import 'package:layblar_app/WIdgets/StopwatchItem.dart';
 
 
 class TimerScreen extends StatefulWidget {
@@ -20,10 +19,8 @@ class TimerScreen extends StatefulWidget {
 
 class _TimerScreenState extends State<TimerScreen> {
 
-  // final Stopwatch _stopwatch = Stopwatch();
   // late Timer _timer;
-  // bool _isRunning = false;
-  // String _result = '00:00:00';
+  
   String selectedDevice = "";
 
   List<DeviceListItem> mockedItems = DeviceCardMockDTO.generateCards();
@@ -66,7 +63,7 @@ class _TimerScreenState extends State<TimerScreen> {
                 Expanded(
                   flex: 6,
                   child: Container(
-                      margin: EdgeInsets.all(8),
+                      margin: const EdgeInsets.all(8),
                         key: UniqueKey(), // Hier wird ein UniqueKey verwendet
 
                       child: ListView(
@@ -140,6 +137,8 @@ class _TimerScreenState extends State<TimerScreen> {
 
   void addNewStopWatchItem(List<StopWatchItem> items, String selectedDevice){
 
+  
+
     debugPrint("[-----DEVICE----]"  + selectedDevice);
     if(selectedDevice == ""){
       showDialog(context: context, builder: (BuildContext context){
@@ -152,8 +151,10 @@ class _TimerScreenState extends State<TimerScreen> {
         );
       });
     }else{
+
+      Stopwatch stopwatch = Stopwatch();
       setState(() {
-        items.add(StopWatchItem(selectedDevice: selectedDevice));
+        items.add(StopWatchItem(selectedDevice: selectedDevice, stopwatch: stopwatch,));
       });
     }
   }
@@ -201,102 +202,9 @@ class _TimerScreenState extends State<TimerScreen> {
 
 
 
-class StopWatchItem extends StatefulWidget {
-  const StopWatchItem({
-    required this.selectedDevice,
-    Key? key,
-  }) : super(key: key);
-
-  final String selectedDevice;
 
 
-  @override
-  State<StopWatchItem> createState() => _StopWatchItemState();
-}
 
-class _StopWatchItemState extends State<StopWatchItem> {
-
-  final Stopwatch _stopwatch = Stopwatch();
-  late Timer _timer;
-  bool _isRunning = false;
-  String _result = '00:00:00';
-  String selectedDevice = "";
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _start();
-  }
-
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-    margin: const EdgeInsets.symmetric(vertical: 8),
-    decoration: Styles.containerDecoration,
-    child: Column(
-      children: [
-        Text(widget.selectedDevice),
-        Row(
-          children: [
-            BlinkingDotWidget(isRunning: _isRunning),
-            Text(_result),
-            ElevatedButton(onPressed: _stop, child: Text("Stop")),
-            ElevatedButton(onPressed: _reset, child: Text("Reset")),
-          ],
-        ),
-      ],
-    ),
-                            );
-  }
-
-
-  void _start() {
-  if (mounted) {
-    _isRunning = true;
-    _timer = Timer.periodic(const Duration(milliseconds: 30), (Timer t) {
-      if (mounted) {
-        setState(() {
-          _result = '${_stopwatch.elapsed.inMinutes.toString().padLeft(2, '0')}:${(_stopwatch.elapsed.inSeconds % 60).toString().padLeft(2, '0')}:${(_stopwatch.elapsed.inMilliseconds % 100).toString().padLeft(2, '0')}';
-        });
-      } else {
-        t.cancel();
-      }
-    });
-    _stopwatch.start();
-  }
-}
-
-   void _stop() {
-
-    
-    _timer.cancel();
-    _stopwatch.stop();
-    setState(() {
-      _isRunning = false;
-    });
-  }
-
-  void _reset(){
-    _stop();
-    _stopwatch.reset();
-    _isRunning = false;
-    setState(() {
-      _result = '00:00:00';
-    });
-  }
-
-  void _submit(String household, String time){
-    debugPrint("submitted: " + household + ", " + time);
-  }
-
-  @override
-void dispose() {
-  _timer.cancel();
-  super.dispose();
-}
-}
 
 
 
