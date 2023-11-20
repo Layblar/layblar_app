@@ -1,4 +1,5 @@
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:layblar_app/DTO/DEviceCardMocksDTO.dart';
 import 'package:layblar_app/DTO/StopWatchHoldItem.dart';
@@ -34,6 +35,9 @@ class _TimerScreenState extends State<TimerScreen> {
 
 
   bool isStopWatchViewSelected = true;
+
+      var timeValue = ""; 
+
 
   @override
   void initState() {
@@ -75,26 +79,33 @@ class _TimerScreenState extends State<TimerScreen> {
                 Expanded(
                   flex: 6,
                   //child: getStopWatchSection(),
-                  child: isStopWatchViewSelected? getStopWatchSection(): Container(
-                    margin: const EdgeInsets.all(8),
-                    child: Column(
-                      children: [
-                        //section for the timer
-                        //lsit fo rthe timer items.
-                      ],
-                    ),
-                  ),
+                  child: isStopWatchViewSelected? getStopWatchSection(): getTimerSection(),
                 )
             
               ],
             ),
              Align(
               alignment: Alignment.bottomRight,
-              child: getSubmitBtnSection(context),  
+              child: getSubmitBtnSection(context, selectedDevice),  
             ),
           ],
         ),
       );
+  }
+
+  Container getTimerSection() {
+
+    return Container(
+                  margin: const EdgeInsets.all(8),
+                  child: Column(
+                    children: [
+                      //section for the timer
+                      //lsit fo rthe timer items.
+                      
+                      Expanded(flex: 6, child: Container(color: Colors.red,))
+                    ],
+                  ),
+                );
   }
 
   Container getStopWatchSection() {
@@ -109,6 +120,73 @@ class _TimerScreenState extends State<TimerScreen> {
                 },
             ),
     );
+  }
+
+
+  void openTimerPicker(String currentDevice){
+
+    if(currentDevice == ""){
+      showDialog(context: context, builder: (BuildContext context){
+        return chooseDeviceFirstDialog(context);
+
+      });
+    }else{
+       showDialog(context: context, builder: (BuildContext context){
+      return Dialog(
+          child: Container(
+            decoration: Styles.containerDecoration,
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "Set Timer for: " + currentDevice,
+                  style: Styles.infoBoxTextStyle,
+                ),
+                const SizedBox(height: 8.0),
+                CupertinoTimerPicker(
+                  mode: CupertinoTimerPickerMode.hm,
+                  onTimerDurationChanged: (value) {
+                    setState(() {
+                      timeValue = value.toString();
+                      debugPrint(timeValue);
+                    });
+                  },
+                ),
+                const SizedBox(height: 8.0),
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: ElevatedButton(
+                        style: Styles.errorButtonStyle,
+                        onPressed: () {
+                          Navigator.of(context).pop(); // Close the dialog
+                        },
+                        child: Text("Cancel", style: Styles.secondaryTextStyle,),
+                      ),
+                    ),
+                     Expanded(
+                      flex: 1,
+                       child: ElevatedButton(
+                        style: Styles.primaryButtonStyle,
+                        onPressed: () {
+                        //TODO: logic
+                         Navigator.of(context).pop(); // Close the dialog
+                        },
+                        child: Text("Done", style: Styles.secondaryTextStyle,),
+                                           ),
+                     ),
+                  ],
+                ),
+               
+              ],
+            ),
+          ),
+        );
+    });
+    }
+   
   }
 
 
@@ -147,7 +225,7 @@ class _TimerScreenState extends State<TimerScreen> {
                 child: Container(
                   decoration: !isStopWatchViewSelected ?Styles.selctedContainerDecoration: null,
                 child:  Center(
-                  child: Text("Timer (3)", style: TextStyle(color:isStopWatchViewSelected?  ThemeColors.textColor: ThemeColors.secondaryBackground),),)),
+                  child: Text("Timer", style: TextStyle(color:isStopWatchViewSelected?  ThemeColors.textColor: ThemeColors.secondaryBackground),),)),
               ),
             ),
            
@@ -196,14 +274,14 @@ class _TimerScreenState extends State<TimerScreen> {
   }
 
 
-  Widget getSubmitBtnSection(BuildContext context) {
+  Widget getSubmitBtnSection(BuildContext context, String selectedDevice) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric( vertical: 16.0, horizontal: 16.0),
           child: ElevatedButton(
-                  onPressed: () => addNewStopWatchItem(stopwatchItems, selectedDevice),
+                  onPressed: () =>isStopWatchViewSelected? addNewStopWatchItem(stopwatchItems, selectedDevice) : openTimerPicker(selectedDevice),
                   style: Styles.primaryButtonRoundedStyle,
                   child:  Text("+", style: Styles.headerTextStyle,),  
                 ),
@@ -216,13 +294,7 @@ class _TimerScreenState extends State<TimerScreen> {
 
     if(selectedDevice == ""){
       showDialog(context: context, builder: (BuildContext context){
-        return AlertDialog(
-          backgroundColor: ThemeColors.secondaryBackground,
-          title: Text("Choose a Device first!", style: Styles.infoBoxTextStyle,),
-          actions: [
-            ElevatedButton( style: Styles.primaryButtonStyle, onPressed: ()=> Navigator.of(context).pop(), child: Text("Got it!", style: Styles.regularTextStyle,))
-          ],
-        );
+        return chooseDeviceFirstDialog(context);
       });
     }else{
 
@@ -236,6 +308,16 @@ class _TimerScreenState extends State<TimerScreen> {
         debugPrint("[------ITEMS LEN----]" + items.length.toString());
       });
     }
+  }
+
+  AlertDialog chooseDeviceFirstDialog(BuildContext context) {
+    return AlertDialog(
+        backgroundColor: ThemeColors.secondaryBackground,
+        title: Text("Choose a Device first!", style: Styles.infoBoxTextStyle,),
+        actions: [
+          ElevatedButton( style: Styles.primaryButtonStyle, onPressed: ()=> Navigator.of(context).pop(), child: Text("Got it!", style: Styles.regularTextStyle,))
+        ],
+      );
   }
 
 
