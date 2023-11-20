@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:layblar_app/DTO/StopWatchHoldItem.dart';
 import 'package:layblar_app/Themes/ThemeColors.dart';
 import 'package:layblar_app/screens/LoginScreen.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MultiProvider(
+    providers: [ChangeNotifierProvider(create: (context) => StopwatchItemsModel())],
+    child: const MyApp()
+    )
+  );
 }
 
 class MyApp extends StatelessWidget {

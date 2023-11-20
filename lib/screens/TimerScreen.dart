@@ -1,10 +1,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:layblar_app/DTO/DEviceCardMocksDTO.dart';
+import 'package:layblar_app/DTO/StopWatchHoldItem.dart';
 import 'package:layblar_app/Themes/Styles.dart';
 import 'package:layblar_app/Themes/ThemeColors.dart';
 import 'package:layblar_app/WIdgets/DeviceListItem.dart';
 import 'package:layblar_app/WIdgets/StopwatchItem.dart';
+import 'package:provider/provider.dart';
 
 
 
@@ -33,6 +35,8 @@ class _TimerScreenState extends State<TimerScreen> {
   @override
   void initState() {
   super.initState();
+  var stopwatchItemsModel = Provider.of<StopwatchItemsModel>(context, listen: false);
+  stopwatchItems = stopwatchItemsModel.stopwatchItems;
   selectedDevice = mockedItems[0].title;
   dropdownItems = mockedItems
   .map((element) {
@@ -44,7 +48,20 @@ class _TimerScreenState extends State<TimerScreen> {
       value: element.title,
     );
     }).toList();
+
+
+    for (var item in stopwatchItems) {
+
+      debugPrint("[------ITEM----]" + item.isPaused.toString());
+        if (!item.isPaused) {
+          item.stopwatch.start();
+        }
+      }
+
+
   }
+  
+
 
 
   @override
@@ -102,7 +119,7 @@ class _TimerScreenState extends State<TimerScreen> {
               child: Container(
                 decoration: Styles.selctedContainerDecoration,
                 child:  Center(
-                  child: Text("Stopwatch  (" + stopwatchItems.length.toString() + ")" , style: TextStyle(color:  ThemeColors.secondaryBackground)),)),
+                  child: stopwatchItems.isEmpty? Text("Stopwatch", style: TextStyle(color: ThemeColors.textColor)): Text("Stopwatch  (" + stopwatchItems.length.toString() + ")" , style: TextStyle(color:  ThemeColors.secondaryBackground)),)),
             ),),
             Expanded(
               flex:1,
@@ -144,7 +161,6 @@ class _TimerScreenState extends State<TimerScreen> {
 
   
 
-    debugPrint("[-----DEVICE----]"  + selectedDevice);
     if(selectedDevice == ""){
       showDialog(context: context, builder: (BuildContext context){
         return AlertDialog(
@@ -158,9 +174,11 @@ class _TimerScreenState extends State<TimerScreen> {
     }else{
 
       Stopwatch stopwatch = Stopwatch();
+      var stopwatchItemsModel = Provider.of<StopwatchItemsModel>(context, listen: false);
+
       setState(() {
-        items.add(StopWatchItem(selectedDevice: selectedDevice, stopwatch: stopwatch,));
-        
+        items.add(StopWatchItem(selectedDevice: selectedDevice, stopwatch: stopwatch));
+        stopwatchItemsModel.addStopwatchItem(items.last); // Add the last item to the model
       });
     }
   }
@@ -168,7 +186,7 @@ class _TimerScreenState extends State<TimerScreen> {
 
   Container getSetDeviceSection() {
     return Container(
-            margin: EdgeInsets.all(8),
+            margin: const EdgeInsets.all(8),
             decoration: Styles.containerDecoration,
             child: Padding(
               padding: const EdgeInsets.all(16.0),

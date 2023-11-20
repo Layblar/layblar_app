@@ -4,15 +4,21 @@ import "package:layblar_app/Themes/Styles.dart";
 import "package:layblar_app/Themes/ThemeColors.dart";
 import "package:layblar_app/WIdgets/BlinkingDot.dart";
 
+// ignore: must_be_immutable
 class StopWatchItem extends StatefulWidget {
-  const StopWatchItem({
+   StopWatchItem({
     required this.selectedDevice,
     required this.stopwatch,
+    this.isPaused = false,
+    this.result = '00:00:00',
     Key? key,
   }) : super(key: key);
 
   final String selectedDevice;
   final Stopwatch stopwatch;
+  bool isPaused;
+  String result;
+
 
   @override
   State<StopWatchItem> createState() => _StopWatchItemState();
@@ -21,12 +27,11 @@ class StopWatchItem extends StatefulWidget {
 class _StopWatchItemState extends State<StopWatchItem> {
   late Timer _timer;
   bool _isRunning = false;
-  String _result = '00:00:00';
 
   @override
   void initState() {
     super.initState();
-    if (!_isRunning) {
+    if (!widget.isPaused) {
       _start();
     }
   }
@@ -53,24 +58,31 @@ class _StopWatchItemState extends State<StopWatchItem> {
                   decoration: Styles.primaryBackgroundContainerDecoration,
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
-                    child: Text(_result),
+                    child: Text(widget.result),
                   ),
                 ),
                 _isRunning
                     ? ElevatedButton(
                         style: Styles.errorButtonStyle,
-                        onPressed: _stop,
+                        onPressed: (){
+                          _stop();
+                          widget.isPaused = true;
+                        },
                         child: Text("Stop", style: Styles.secondaryTextStyle),
                       )
                     : ElevatedButton(
                         style: Styles.primaryButtonStyle,
-                        onPressed: _start,
+                        onPressed:(){
+                          _start();
+                          widget.isPaused = false;
+                        },
                         child:
                             Text("Resume", style: Styles.secondaryTextStyle)),
                 ElevatedButton(
                     style: Styles.secondaryButtonStyle,
                     onPressed: _reset,
                     child: Text("Reset", style: Styles.secondaryTextStyle)),
+                
                 IconButton(onPressed: () {}, icon: Icon(Icons.send, color: ThemeColors.textColor)),
               ],
             ),
@@ -86,7 +98,7 @@ class _StopWatchItemState extends State<StopWatchItem> {
       _timer = Timer.periodic(const Duration(milliseconds: 30), (Timer t) {
         if (mounted) {
           setState(() {
-            _result = '${widget.stopwatch.elapsed.inMinutes.toString().padLeft(2, '0')}:${(widget.stopwatch.elapsed.inSeconds % 60).toString().padLeft(2, '0')}:${(widget.stopwatch.elapsed.inMilliseconds % 100).toString().padLeft(2, '0')}';
+            widget.result = '${widget.stopwatch.elapsed.inMinutes.toString().padLeft(2, '0')}:${(widget.stopwatch.elapsed.inSeconds % 60).toString().padLeft(2, '0')}:${(widget.stopwatch.elapsed.inMilliseconds % 100).toString().padLeft(2, '0')}';
           });
         } else {
           t.cancel();
@@ -109,7 +121,7 @@ class _StopWatchItemState extends State<StopWatchItem> {
     widget.stopwatch.reset();
     _isRunning = false;
     setState(() {
-      _result = '00:00:00';
+      widget.result = '00:00:00';
     });
   }
 
