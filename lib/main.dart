@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:layblar_app/DTO/StopWatchHoldItem.dart';
 import 'package:layblar_app/Themes/ThemeColors.dart';
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
      theme: ThemeData(
+   
       primaryColor: ThemeColors.primary,
       colorScheme: ColorScheme.fromSwatch(primarySwatch: buildMaterialColor(ThemeColors.primary)),
        

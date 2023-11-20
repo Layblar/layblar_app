@@ -144,14 +144,22 @@ class _TimerScreenState extends State<TimerScreen> {
                   style: Styles.infoBoxTextStyle,
                 ),
                 const SizedBox(height: 8.0),
-                CupertinoTimerPicker(
-                  mode: CupertinoTimerPickerMode.hm,
-                  onTimerDurationChanged: (value) {
-                    setState(() {
-                      timeValue = value.toString();
-                      debugPrint(timeValue);
-                    });
-                  },
+                CupertinoTheme(
+                  data: CupertinoThemeData(
+                    primaryColor: ThemeColors.primary,
+                    textTheme: CupertinoTextThemeData(
+                      pickerTextStyle: TextStyle(color: ThemeColors.textColor, fontSize: 18),
+                    ),
+                  ),
+                  child: CupertinoTimerPicker(
+                    mode: CupertinoTimerPickerMode.hm,
+                    onTimerDurationChanged: (value) {
+                      setState(() {
+                        timeValue = value.toString();
+                        debugPrint(timeValue);
+                      });
+                    },
+                  ),
                 ),
                 const SizedBox(height: 8.0),
                 Row(
