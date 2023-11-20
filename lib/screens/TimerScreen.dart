@@ -7,6 +7,7 @@ import 'package:layblar_app/Themes/Styles.dart';
 import 'package:layblar_app/Themes/ThemeColors.dart';
 import 'package:layblar_app/WIdgets/DeviceListItem.dart';
 import 'package:layblar_app/WIdgets/StopwatchItem.dart';
+import 'package:layblar_app/WIdgets/TimerItem.dart';
 import 'package:provider/provider.dart';
 
 
@@ -102,7 +103,9 @@ class _TimerScreenState extends State<TimerScreen> {
                       //section for the timer
                       //lsit fo rthe timer items.
                       
-                      Expanded(flex: 6, child: Container(color: Colors.red,))
+                      Expanded(flex: 6, child: Container(
+                        child: TimerItem(selectedDevice: selectedDevice, time: "ARAERAR"),
+                      ))
                     ],
                   ),
                 );
