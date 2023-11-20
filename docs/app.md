@@ -65,7 +65,10 @@ All notable changes to this project will be documented in this file.
 
 
 
+## 2023-11-20 - ([Richard Lorenz](https://github.com/fluttervieh))
 
+### Updated
+- Timer View: fixed some bugs with the state preseveration fof the individual stopwatch items
 
 
 

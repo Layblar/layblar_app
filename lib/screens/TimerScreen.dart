@@ -32,6 +32,9 @@ class _TimerScreenState extends State<TimerScreen> {
 
   List<StopWatchItem> stopwatchItems = [];
 
+
+  bool isStopWatchViewSelected = true;
+
   @override
   void initState() {
   super.initState();
@@ -49,28 +52,19 @@ class _TimerScreenState extends State<TimerScreen> {
     );
     }).toList();
 
-
     for (var item in stopwatchItems) {
-
-      debugPrint("[------ITEM----]" + item.isPaused.toString());
         if (!item.isPaused) {
           item.stopwatch.start();
         }
       }
-
-
   }
   
 
-
-
   @override
   Widget build(BuildContext context) {
-
     return  SizedBox(
         child: Stack(
           children: [
-           
             Column(
               children: [
                 //const InfoBox(),
@@ -80,17 +74,15 @@ class _TimerScreenState extends State<TimerScreen> {
                 //Expanded(flex: 6, child: getStopwatchSection(context)),
                 Expanded(
                   flex: 6,
-                  child: Container(
-                      margin: const EdgeInsets.all(8),
-                        key: UniqueKey(), // Hier wird ein UniqueKey verwendet
-
-                      child: ListView.builder(
-                reverse: false, // Umkehrung der Liste
-                itemCount: stopwatchItems.length,
-                itemBuilder: (context, index) {
-                  return stopwatchItems[index];
-                },
-              ),
+                  //child: getStopWatchSection(),
+                  child: isStopWatchViewSelected? getStopWatchSection(): Container(
+                    margin: const EdgeInsets.all(8),
+                    child: Column(
+                      children: [
+                        //section for the timer
+                        //lsit fo rthe timer items.
+                      ],
+                    ),
                   ),
                 )
             
@@ -105,6 +97,20 @@ class _TimerScreenState extends State<TimerScreen> {
       );
   }
 
+  Container getStopWatchSection() {
+    return Container(
+            margin: const EdgeInsets.all(8),
+            key: UniqueKey(),
+              child: ListView.builder(
+                reverse: false, // Umkehrung der Liste
+                itemCount: stopwatchItems.length,
+                itemBuilder: (context, index) {
+                  return stopwatchItems[index];
+                },
+            ),
+    );
+  }
+
 
 
   Container getToggleWatchModeSection() {
@@ -115,20 +121,33 @@ class _TimerScreenState extends State<TimerScreen> {
           children: [
             Expanded(flex:1, 
             child: GestureDetector(
-              onTap: (){},
+              onTap: (){
+                if(!isStopWatchViewSelected){
+                  setState(() {
+                    isStopWatchViewSelected = true;
+                  });
+                }
+              },
               child: Container(
-                decoration: Styles.selctedContainerDecoration,
+                decoration: isStopWatchViewSelected? Styles.selctedContainerDecoration: null,
                 child:  Center(
-                  child: stopwatchItems.isEmpty? Text("Stopwatch", style: TextStyle(color: ThemeColors.textColor)): Text("Stopwatch  (" + stopwatchItems.length.toString() + ")" , style: TextStyle(color:  ThemeColors.secondaryBackground)),)),
+                  child: 
+                  stopwatchItems.isEmpty? Text("Stopwatch", style: TextStyle(color: isStopWatchViewSelected?  ThemeColors.secondaryBackground:ThemeColors.textColor)): Text("Stopwatch  (" + stopwatchItems.length.toString() + ")" , style: TextStyle(color: isStopWatchViewSelected?  ThemeColors.secondaryBackground:ThemeColors.textColor)),)),
             ),),
             Expanded(
               flex:1,
               child: GestureDetector(
-                onTap: (){},
+                onTap: (){
+                  if(isStopWatchViewSelected){
+                    setState(() {
+                      isStopWatchViewSelected = false;
+                    });
+                  }
+                },
                 child: Container(
-                  decoration: null,
+                  decoration: !isStopWatchViewSelected ?Styles.selctedContainerDecoration: null,
                 child:  Center(
-                  child: Text("Timer (3)", style: TextStyle(color:ThemeColors.textColor),),)),
+                  child: Text("Timer (3)", style: TextStyle(color:isStopWatchViewSelected?  ThemeColors.textColor: ThemeColors.secondaryBackground),),)),
               ),
             ),
            
@@ -138,55 +157,7 @@ class _TimerScreenState extends State<TimerScreen> {
       );
   }
 
-
- 
-
-  Widget getSubmitBtnSection(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric( vertical: 16.0, horizontal: 16.0),
-          child: ElevatedButton(
-                  onPressed: () => addNewStopWatchItem(stopwatchItems, selectedDevice),
-                  style: Styles.primaryButtonRoundedStyle,
-                  child:  Text("+", style: Styles.headerTextStyle,),  
-                ),
-        ),
-      ],
-    );
-  }
-
-  void addNewStopWatchItem(List<StopWatchItem> items, String selectedDevice){
-
-  
-
-    if(selectedDevice == ""){
-      showDialog(context: context, builder: (BuildContext context){
-        return AlertDialog(
-          backgroundColor: ThemeColors.secondaryBackground,
-          title: Text("Choose a Device first!", style: Styles.infoBoxTextStyle,),
-          actions: [
-            ElevatedButton( style: Styles.primaryButtonStyle, onPressed: ()=> Navigator.of(context).pop(), child: Text("Got it!", style: Styles.regularTextStyle,))
-          ],
-        );
-      });
-    }else{
-
-      Stopwatch stopwatch = Stopwatch();
-      var stopwatchItemsModel = Provider.of<StopwatchItemsModel>(context, listen: false);
-
-      setState(() {
-        var newItem = StopWatchItem(selectedDevice: selectedDevice, stopwatch: stopwatch);
-        stopwatchItemsModel.addStopwatchItem(newItem); // Add the last item to the model
-
-        debugPrint("[------ITEMS LEN----]" + items.length.toString());
-      });
-    }
-  }
-
-
-  Container getSetDeviceSection() {
+   Container getSetDeviceSection() {
     return Container(
             margin: const EdgeInsets.all(8),
             decoration: Styles.containerDecoration,
@@ -195,7 +166,6 @@ class _TimerScreenState extends State<TimerScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                
                 children: [
                   Text("Select your Device.", style: Styles.infoBoxTextStyle,),
                   SizedBox(
@@ -224,6 +194,52 @@ class _TimerScreenState extends State<TimerScreen> {
             ),
           );
   }
+
+
+  Widget getSubmitBtnSection(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric( vertical: 16.0, horizontal: 16.0),
+          child: ElevatedButton(
+                  onPressed: () => addNewStopWatchItem(stopwatchItems, selectedDevice),
+                  style: Styles.primaryButtonRoundedStyle,
+                  child:  Text("+", style: Styles.headerTextStyle,),  
+                ),
+        ),
+      ],
+    );
+  }
+
+  void addNewStopWatchItem(List<StopWatchItem> items, String selectedDevice){
+
+    if(selectedDevice == ""){
+      showDialog(context: context, builder: (BuildContext context){
+        return AlertDialog(
+          backgroundColor: ThemeColors.secondaryBackground,
+          title: Text("Choose a Device first!", style: Styles.infoBoxTextStyle,),
+          actions: [
+            ElevatedButton( style: Styles.primaryButtonStyle, onPressed: ()=> Navigator.of(context).pop(), child: Text("Got it!", style: Styles.regularTextStyle,))
+          ],
+        );
+      });
+    }else{
+
+      Stopwatch stopwatch = Stopwatch();
+      var stopwatchItemsModel = Provider.of<StopwatchItemsModel>(context, listen: false);
+
+      setState(() {
+        var newItem = StopWatchItem(selectedDevice: selectedDevice, stopwatch: stopwatch);
+        stopwatchItemsModel.addStopwatchItem(newItem); // Add the last item to the model
+
+        debugPrint("[------ITEMS LEN----]" + items.length.toString());
+      });
+    }
+  }
+
+
+ 
 }
 
 
