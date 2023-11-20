@@ -177,8 +177,10 @@ class _TimerScreenState extends State<TimerScreen> {
       var stopwatchItemsModel = Provider.of<StopwatchItemsModel>(context, listen: false);
 
       setState(() {
-        items.add(StopWatchItem(selectedDevice: selectedDevice, stopwatch: stopwatch));
-        stopwatchItemsModel.addStopwatchItem(items.last); // Add the last item to the model
+        var newItem = StopWatchItem(selectedDevice: selectedDevice, stopwatch: stopwatch);
+        stopwatchItemsModel.addStopwatchItem(newItem); // Add the last item to the model
+
+        debugPrint("[------ITEMS LEN----]" + items.length.toString());
       });
     }
   }
