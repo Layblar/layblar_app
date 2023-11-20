@@ -70,6 +70,8 @@ All notable changes to this project will be documented in this file.
 ### Updated
 - Timer View: fixed some bugs with the state preseveration fof the individual stopwatch items
 
+- Timer View: added first scetch of the timer section, including a prototype of a time picker and a timer with pase and resume
+
 
 
 
