@@ -1,6 +1,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:layblar_app/Themes/Styles.dart';
+import 'package:layblar_app/Themes/ThemeColors.dart';
+import 'package:layblar_app/WIdgets/BlinkingDot.dart';
 import 'package:layblar_app/WIdgets/Countdown.dart';
 
 // ignore: must_be_immutable
@@ -24,6 +26,8 @@ class _TimerItemState extends State<TimerItem> with TickerProviderStateMixin {
 
 
   late AnimationController _controller;
+  bool _isRunning = true;
+
 
    @override
   void dispose() {
@@ -52,8 +56,10 @@ class _TimerItemState extends State<TimerItem> with TickerProviderStateMixin {
       widget.isPaused = ! widget.isPaused;
       if (widget.isPaused) {
         _controller.stop();
+        _isRunning =false;
       } else {
         _controller.forward();
+        _isRunning = true;
       }
     });
   }
@@ -73,6 +79,7 @@ class _TimerItemState extends State<TimerItem> with TickerProviderStateMixin {
             ),
             Row(
               children: [
+                BlinkingDotWidget(isRunning: _isRunning),
                 Countdown(
                   animation: StepTween(
                     begin: widget.seconds, // THIS IS A USER ENTERED NUMBER
@@ -81,7 +88,7 @@ class _TimerItemState extends State<TimerItem> with TickerProviderStateMixin {
                 ),
               ],
             ),
-            ElevatedButton(onPressed:  ()=> _togglePause(), child: Icon(widget.isPaused ? Icons.play_arrow : Icons.pause))
+            ElevatedButton(onPressed:  ()=> _togglePause(), style: widget.isPaused? Styles.primaryButtonStyle : Styles.errorButtonStyle, child: Icon(widget.isPaused ? Icons.play_arrow : Icons.pause, color: ThemeColors.secondaryBackground ,))
           ],
         ),
       ),

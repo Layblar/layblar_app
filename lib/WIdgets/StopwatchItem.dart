@@ -68,7 +68,7 @@ class _StopWatchItemState extends State<StopWatchItem> {
                           _stop();
                           widget.isPaused = true;
                         },
-                        child: Text("Stop", style: Styles.secondaryTextStyle),
+                        child:  Icon(Icons.pause, color: ThemeColors.secondaryBackground,),
                       )
                     : ElevatedButton(
                         style: Styles.primaryButtonStyle,
@@ -77,7 +77,7 @@ class _StopWatchItemState extends State<StopWatchItem> {
                           widget.isPaused = false;
                         },
                         child:
-                            Text("Resume", style: Styles.secondaryTextStyle)),
+                            Icon(Icons.play_arrow, color: ThemeColors.secondaryBackground,),),
                 ElevatedButton(
                     style: Styles.secondaryButtonStyle,
                     onPressed: _reset,

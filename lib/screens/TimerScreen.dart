@@ -247,7 +247,7 @@ class _TimerScreenState extends State<TimerScreen> {
                 decoration: isStopWatchViewSelected? Styles.selctedContainerDecoration: null,
                 child:  Center(
                   child: 
-                  stopwatchItems.isEmpty? Text("Stopwatch", style: TextStyle(color: isStopWatchViewSelected?  ThemeColors.secondaryBackground:ThemeColors.textColor)): Text("Stopwatch  (" + stopwatchItems.length.toString() + ")" , style: TextStyle(color: isStopWatchViewSelected?  ThemeColors.secondaryBackground:ThemeColors.textColor)),)),
+                  stopwatchItems.isEmpty? Text("Stopwatch", style: TextStyle(color: isStopWatchViewSelected?  ThemeColors.secondaryBackground:ThemeColors.textColor)): Text("Stopwatch (" + stopwatchItems.length.toString() + ")" , style: TextStyle(color: isStopWatchViewSelected?  ThemeColors.secondaryBackground:ThemeColors.textColor)),)),
             ),),
             Expanded(
               flex:1,
@@ -262,7 +262,7 @@ class _TimerScreenState extends State<TimerScreen> {
                 child: Container(
                   decoration: !isStopWatchViewSelected ?Styles.selctedContainerDecoration: null,
                 child:  Center(
-                  child: Text("Timer", style: TextStyle(color:isStopWatchViewSelected?  ThemeColors.textColor: ThemeColors.secondaryBackground),),)),
+                  child:timerItems.isEmpty?  Text("Timer", style: TextStyle(color:isStopWatchViewSelected?  ThemeColors.textColor: ThemeColors.secondaryBackground)): Text("Timer (" + timerItems.length.toString() + ")", style: TextStyle(color: !isStopWatchViewSelected?ThemeColors.secondaryBackground:ThemeColors.textColor),))),
               ),
             ),
            
