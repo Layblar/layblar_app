@@ -33,6 +33,7 @@ class _TimerScreenState extends State<TimerScreen> {
   List<DropdownMenuItem<String>> dropdownItems = [];
 
   List<StopWatchItem> stopwatchItems = [];
+  List<TimerItem> timerItems = [];
 
 
   bool isStopWatchViewSelected = true;
@@ -98,17 +99,14 @@ class _TimerScreenState extends State<TimerScreen> {
 
     return Container(
                   margin: const EdgeInsets.all(8),
-                  child: Column(
-                    children: [
-                      //section for the timer
-                      //lsit fo rthe timer items.
-                      
-                      Expanded(flex: 6, child: Container(
-                        child: TimerItem(selectedDevice: selectedDevice, time: "ARAERAR"),
-                      ))
-                    ],
-                  ),
-                );
+                  child: ListView.builder(
+                      reverse: false, // Umkehrung der Liste
+                      itemCount: timerItems.length,
+                      itemBuilder: (context, index) {
+                        return timerItems[index];
+                      },
+            ),
+          );
   }
 
   Container getStopWatchSection() {
@@ -182,11 +180,14 @@ class _TimerScreenState extends State<TimerScreen> {
                        child: ElevatedButton(
                         style: Styles.primaryButtonStyle,
                         onPressed: () {
-                        //TODO: logic
-                         Navigator.of(context).pop(); // Close the dialog
-                        },
-                        child: Text("Done", style: Styles.secondaryTextStyle,),
-                                           ),
+                          //TODO: logic
+                              if(timeValue != "0:00:00.000000"){
+                                addNewTimerItem(timeValue, selectedDevice);
+                              }
+                              Navigator.of(context).pop(); // Close the dialog
+                          },
+                          child: Text("Done", style: Styles.secondaryTextStyle,),
+                        ),
                      ),
                   ],
                 ),
@@ -199,6 +200,31 @@ class _TimerScreenState extends State<TimerScreen> {
     }
    
   }
+
+
+  void addNewTimerItem(String time, String selectedDevice){
+    int seconds = convertTimeStringToSeconds(time);
+    debugPrint("[-----seconds---]" + seconds.toString());
+    setState(() {
+      timerItems.add(TimerItem(selectedDevice: selectedDevice, seconds: seconds));
+    });
+  }
+
+
+  int convertTimeStringToSeconds(String timeString) {
+  // Zeit in Stunden:Minuten:Sekunden aufteilen
+  List<String> timeComponents = timeString.split(":");
+  
+  // Extrahiere Stunden, Minuten und Sekunden
+  int hours = int.parse(timeComponents[0]);
+  int minutes = int.parse(timeComponents[1]);
+  int seconds = int.parse(timeComponents[2].split(".")[0]); // Entferne Millisekunden
+  
+  // Berechne die Gesamtzeit in Sekunden
+  int totalSeconds = hours * 3600 + minutes * 60 + seconds;
+  
+  return totalSeconds;
+}
 
 
 

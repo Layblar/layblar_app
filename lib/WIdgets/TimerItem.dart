@@ -1,4 +1,3 @@
-import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:layblar_app/Themes/Styles.dart';
@@ -8,13 +7,13 @@ import 'package:layblar_app/WIdgets/Countdown.dart';
 class TimerItem extends StatefulWidget {
     TimerItem({
     required this.selectedDevice,
-    required this.time,
+    required this.seconds,
     this.isPaused = false,
     Key? key}) : super(key: key);
 
 
   final String selectedDevice;
-  final String time;
+  final int seconds;
   bool isPaused;
 
   @override
@@ -23,10 +22,8 @@ class TimerItem extends StatefulWidget {
 
 class _TimerItemState extends State<TimerItem> with TickerProviderStateMixin {
 
-  late Timer _timer;
 
   late AnimationController _controller;
-  int levelClock = 180;
 
    @override
   void dispose() {
@@ -42,7 +39,7 @@ class _TimerItemState extends State<TimerItem> with TickerProviderStateMixin {
         vsync: this,
         duration: Duration(
             seconds:
-                levelClock) // gameData.levelClock is a user entered number elsewhere in the applciation
+                widget.seconds) // gameData.levelClock is a user entered number elsewhere in the applciation
         );
 
     _controller.forward();
@@ -78,7 +75,7 @@ class _TimerItemState extends State<TimerItem> with TickerProviderStateMixin {
               children: [
                 Countdown(
                   animation: StepTween(
-                    begin: levelClock, // THIS IS A USER ENTERED NUMBER
+                    begin: widget.seconds, // THIS IS A USER ENTERED NUMBER
                     end: 0,
                   ).animate(_controller),
                 ),
