@@ -209,16 +209,20 @@ class _TimerScreenState extends State<TimerScreen> {
 
 
   void addNewTimerItem(String time, String selectedDevice){
-    int seconds = convertTimeStringToSeconds(time);
-    debugPrint("[-----seconds---]" + seconds.toString());
-
+    int totalseconds = convertTimeStringToSeconds(time);
+    int hours = totalseconds ~/ 3600;
+    int minutes = (totalseconds % 3600) ~/ 60;
+    int seconds = totalseconds % 60;
 
     var timerItemsModel = Provider.of<TimerItemsModel>(context, listen: false);
 
 
     setState(() {
 
-      var newItem = TimerItem(selectedDevice: selectedDevice, seconds: seconds);
+      
+
+
+      var newItem = TimerItem(selectedDevice: selectedDevice,hours: hours, minutes: minutes, seconds: seconds);
       timerItemsModel.addTimerItem(newItem);
     });
   }

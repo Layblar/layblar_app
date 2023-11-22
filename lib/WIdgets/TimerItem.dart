@@ -1,21 +1,24 @@
-
 import 'package:flutter/material.dart';
 import 'package:layblar_app/Themes/Styles.dart';
 import 'package:layblar_app/Themes/ThemeColors.dart';
 import 'package:layblar_app/WIdgets/BlinkingDot.dart';
-import 'package:layblar_app/WIdgets/Countdown.dart';
+import 'dart:async';
 
 // ignore: must_be_immutable
 class TimerItem extends StatefulWidget {
     TimerItem({
     required this.selectedDevice,
+    required this.hours,
+    required this.minutes,
     required this.seconds,
     this.isPaused = false,
     Key? key}) : super(key: key);
 
 
   final String selectedDevice;
-  final int seconds;
+   int hours;
+   int minutes;
+   int seconds;
   bool isPaused;
 
   @override
@@ -24,45 +27,77 @@ class TimerItem extends StatefulWidget {
 
 class _TimerItemState extends State<TimerItem> with TickerProviderStateMixin {
 
+  bool _isRunning = false;
+  
 
-  late AnimationController _controller;
-  bool _isRunning = true;
+  // The timer
+  Timer? _timer;
 
-
-   @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
 
   @override
   void initState() {
+    // TODO: implement initState
     super.initState();
 
-    _controller = AnimationController(
-        vsync: this,
-        duration: Duration(
-            seconds:
-                widget.seconds)
-        );
-
-    _controller.forward();
+    
+      if(!widget.isPaused){
+        _startTimer();
+      }
   }
 
 
 
-  void _togglePause(){
-    setState(() {
-      widget.isPaused = ! widget.isPaused;
-      if (widget.isPaused) {
-        _controller.stop();
-        _isRunning =false;
-      } else {
-        _controller.forward();
-        _isRunning = true;
+
+  void _startTimer() {
+   if(mounted){
+     setState(() {
+      _isRunning = true;
+    });
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if(mounted){
+        setState(() {
+        if (widget.seconds > 0) {
+          widget.seconds--;
+        } else {
+          if (widget.minutes > 0) {
+            widget.minutes--;
+            widget.seconds = 59;
+          } else {
+            if (widget.hours > 0) {
+              widget.hours--;
+              widget.minutes = 59;
+              widget.seconds = 59;
+            } else {
+              _isRunning = false;
+              _timer?.cancel();
+            }
+          }
+        }
+      });
       }
     });
+   }
   }
+
+  void _pauseTimer() {
+    setState(() {
+      _isRunning = false;
+    });
+    _timer?.cancel();
+  }
+
+  // This function will be called when the user presses the cancel button
+  // Cancel the timer
+  // void _cancelTimer() {
+  //   setState(() {
+  //     widget.hours = 0;
+  //     _minutes = 0;
+  //     _seconds = 0;
+  //     _isRunning = false;
+  //   });
+  //   _timer?.cancel();
+  // }
+
 
   @override
   Widget build(BuildContext context) {
@@ -80,15 +115,31 @@ class _TimerItemState extends State<TimerItem> with TickerProviderStateMixin {
             Row(
               children: [
                 BlinkingDotWidget(isRunning: _isRunning),
-                Countdown(
-                  animation: StepTween(
-                    begin: widget.seconds, // THIS IS A USER ENTERED NUMBER
-                    end: 0,
-                  ).animate(_controller),
-                ),
+               Text(
+                  '${widget.hours.toString().padLeft(2, '0')}:${widget.minutes.toString().padLeft(2, '0')}:${widget.seconds.toString().padLeft(2, '0')}',
+                  
+                )
               ],
             ),
-            ElevatedButton(onPressed:  ()=> _togglePause(), style: widget.isPaused? Styles.primaryButtonStyle : Styles.errorButtonStyle, child: Icon(widget.isPaused ? Icons.play_arrow : Icons.pause, color: ThemeColors.secondaryBackground ,))
+            widget.isPaused? 
+            ElevatedButton(
+              style: Styles.primaryButtonStyle,
+              onPressed: (){
+                setState(() {
+                  _startTimer();
+                  widget.isPaused = false;
+                });
+              }, 
+              child: Icon(Icons.play_arrow, color: ThemeColors.secondaryBackground,)):
+            ElevatedButton(
+              style: Styles.errorButtonStyle,
+              onPressed: (){
+                setState(() {
+                  _pauseTimer();
+                  widget.isPaused =true;
+                });
+              }, 
+              child: Icon(Icons.pause, color: ThemeColors.secondaryBackground,))
           ],
         ),
       ),
