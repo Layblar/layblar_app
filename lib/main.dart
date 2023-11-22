@@ -1,13 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:layblar_app/DTO/StopWatchHoldItem.dart';
+import 'package:layblar_app/DTO/TimerHoldItem.dart';
 import 'package:layblar_app/Themes/ThemeColors.dart';
 import 'package:layblar_app/screens/LoginScreen.dart';
 import 'package:provider/provider.dart';
 
 void main() {
   runApp(MultiProvider(
-    providers: [ChangeNotifierProvider(create: (context) => StopwatchItemsModel())],
+    providers: [
+
+      ChangeNotifierProvider(create: (context) => StopwatchItemsModel()),
+      ChangeNotifierProvider(create: (context) => TimerItemsModel())
+      
+    ],
     child: const MyApp()
     )
   );

@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:layblar_app/DTO/DEviceCardMocksDTO.dart';
 import 'package:layblar_app/DTO/StopWatchHoldItem.dart';
+import 'package:layblar_app/DTO/TimerHoldItem.dart';
 import 'package:layblar_app/Themes/Styles.dart';
 import 'package:layblar_app/Themes/ThemeColors.dart';
 import 'package:layblar_app/WIdgets/DeviceListItem.dart';
@@ -45,7 +46,10 @@ class _TimerScreenState extends State<TimerScreen> {
   void initState() {
   super.initState();
   var stopwatchItemsModel = Provider.of<StopwatchItemsModel>(context, listen: false);
+  var timerItemsModel = Provider.of<TimerItemsModel>(context, listen: false);
+
   stopwatchItems = stopwatchItemsModel.stopwatchItems;
+  timerItems = timerItemsModel.timerItems;
   selectedDevice = mockedItems[0].title;
   dropdownItems = mockedItems
   .map((element) {
@@ -63,6 +67,8 @@ class _TimerScreenState extends State<TimerScreen> {
           item.stopwatch.start();
         }
       }
+
+   
   }
   
 
@@ -205,8 +211,15 @@ class _TimerScreenState extends State<TimerScreen> {
   void addNewTimerItem(String time, String selectedDevice){
     int seconds = convertTimeStringToSeconds(time);
     debugPrint("[-----seconds---]" + seconds.toString());
+
+
+    var timerItemsModel = Provider.of<TimerItemsModel>(context, listen: false);
+
+
     setState(() {
-      timerItems.add(TimerItem(selectedDevice: selectedDevice, seconds: seconds));
+
+      var newItem = TimerItem(selectedDevice: selectedDevice, seconds: seconds);
+      timerItemsModel.addTimerItem(newItem);
     });
   }
 

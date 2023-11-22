@@ -43,7 +43,7 @@ class _TimerItemState extends State<TimerItem> with TickerProviderStateMixin {
         vsync: this,
         duration: Duration(
             seconds:
-                widget.seconds) // gameData.levelClock is a user entered number elsewhere in the applciation
+                widget.seconds)
         );
 
     _controller.forward();
